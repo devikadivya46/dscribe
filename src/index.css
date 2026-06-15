@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji";
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  
+  /* Standard blue overrides matching DScribe's electric blue (#0066ff) */
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-505: #3b82f6;
+  --color-blue-600: #0066ff;
+  --color-blue-700: #0055d4;
+  --color-blue-800: #0044aa;
+  --color-blue-900: #003380;
+  --color-blue-950: #001f4d;
+
+  /* Soft pastel accent palette for icon badges & highlights */
+  --color-pastel-blue: #DFF3FF;
+  --color-pastel-purple: #DCCFF9;
+  --color-pastel-pink: #F8E7F3;
+  --color-pastel-green: #DDE3D6;
+
+  /* Premium Medical Colors & Neumorphism Shadow Utilities */
+  --shadow-nm-flat: 6px 6px 14px #d2d7e5, -6px -6px 14px #ffffff;
+  --shadow-nm-pressed: inset 5px 5px 10px #d2d7e5, inset -5px -5px 10px #ffffff;
+  --shadow-nm-button: 4px 4px 8px #d2d7e5, -4px -4px 8px #ffffff;
+  --shadow-nm-button-inset: inset 2px 2px 4px #d2d7e5, inset -2px -2px 4px #ffffff;
+  --shadow-nm-toast: 8px 8px 20px #cbd0de, -8px -8px 20px #ffffff;
+  --shadow-nm-inset-small: inset 2px 2px 5px #d2d7e5, inset -2px -2px 5px #ffffff;
+
+  /* Flat card shadows for the booking/clinic redesign */
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+  --shadow-card-hover: 0 4px 12px rgba(15, 23, 42, 0.06), 0 12px 32px rgba(15, 23, 42, 0.10);
+}
+
+/* Base custom classes for manual usage */
+.neumorphic-flat {
+  background: #f1f3f9;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 6px 6px 14px #d2d7e5, -6px -6px 14px #ffffff;
+}
+
+.neumorphic-pressed {
+  background: #f1f3f9;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 4px 4px 8px #d2d7e5, inset -4px -4px 8px #ffffff;
+}
+
+.neumorphic-button {
+  background: #f1f3f9;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 4px 4px 8px #d2d7e5, -4px -4px 8px #ffffff;
+}
+
+.neumorphic-button:hover:not(:disabled) {
+  box-shadow: 2px 2px 4px #d2d7e5, -2px -2px 4px #ffffff;
+  transform: translateY(0.5px);
+}
+
+.neumorphic-button:active:not(:disabled) {
+  box-shadow: inset 3px 3px 6px #d2d7e5, inset -3px -3px 6px #ffffff;
+  transform: translateY(1px);
+}
+
+/* Precision scrollbar utility styling */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Shake animations for alert notices validation */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+.animate-shake {
+  animation: shake 0.2s ease-in-out 2;
+}
+
+/* Comfort mode for improved readability and easier interaction */
+.comfort-mode {
+  color: #102a43;
+  background-color: #f8fafc;
+  font-weight: 500;
+}
+
+.comfort-mode * {
+  line-height: 1.75 !important;
+  letter-spacing: 0.02em;
+}
+
+.comfort-mode .text-xs {
+  font-size: 0.92rem !important;
+}
+
+.comfort-mode .text-sm {
+  font-size: 1rem !important;
+}
+
+.comfort-mode .text-base {
+  font-size: 1.08rem !important;
+}
+
+.comfort-mode .text-lg {
+  font-size: 1.25rem !important;
+}
+
+.comfort-mode .text-xl {
+  font-size: 1.45rem !important;
+}
+
+.comfort-mode .text-2xl {
+  font-size: 1.75rem !important;
+}
+
+.comfort-mode .text-3xl {
+  font-size: 2rem !important;
+}
+
+.comfort-mode button,
+.comfort-mode input,
+.comfort-mode select,
+.comfort-mode textarea,
+.comfort-mode .rounded-full,
+.comfort-mode .rounded-lg {
+  min-height: 3rem;
+}
+
+.comfort-mode button,
+.comfort-mode input,
+.comfort-mode select,
+.comfort-mode textarea {
+  padding: 0.85rem 1rem !important;
+}
+
+.comfort-mode .bg-white {
+  background-color: #fcfdff !important;
+}
+
+.comfort-mode .border-slate-100 {
+  border-color: #cbd5e1 !important;
+}
+
+.comfort-mode .text-slate-500,
+.comfort-mode .text-slate-400,
+.comfort-mode .text-slate-600 {
+  color: #1f2937 !important;
+}
+
+.comfort-mode .bg-slate-50,
+.comfort-mode .hover\:bg-slate-50:hover {
+  background-color: #edf2f7 !important;
+}
+

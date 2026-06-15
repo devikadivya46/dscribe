@@ -1,0 +1,6 @@
+{
+  "name": "Clinical Nexus",
+  "description": "High-fidelity clinical dashboard for managing in-patient admission workflows, active patient registries, filter controls, and medical record files (MRD).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
