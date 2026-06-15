@@ -64,8 +64,8 @@ export interface MRDFile {
 }
 
 export interface ActiveFilters {
-  doctor: string;
-  department: string;
+  doctors: string[];
+  departments: string[];
   role: string;
   statuses: string[];
   startDate: string;

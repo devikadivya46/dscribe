@@ -42,6 +42,8 @@ import MRDFiles from './components/MRDFiles';
 import Overview from './components/Overview';
 import PatientInspectPane from './components/PatientInspectPane';
 import PatientDetailsModal from './components/PatientDetailsModal';
+import Logo from './components/Logo';
+import ScribeWorkbench from './components/ScribeWorkbench';
 
 export default function App() {
   const [activeTab, setActiveTab] = React.useState<string>('in-patient');
@@ -99,8 +101,8 @@ export default function App() {
 
   const activeFiltersSummary = () => {
     const active = [];
-    if (activeFilters.doctor) active.push(`Doctor: ${activeFilters.doctor.replace('Dr. ', '')}`);
-    if (activeFilters.department) active.push(`Dept: ${activeFilters.department}`);
+    if (activeFilters.doctors.length > 0) active.push(`Doctors: ${activeFilters.doctors.map(d => d.replace('Dr. ', '')).join(', ')}`);
+    if (activeFilters.departments.length > 0) active.push(`Depts: ${activeFilters.departments.join(', ')}`);
     if (activeFilters.statuses.length > 0) active.push(`Statuses: ${activeFilters.statuses.join(', ')}`);
     if (activeFilters.labels.length > 0) active.push(`Labels: ${activeFilters.labels.join(', ')}`);
     if (searchTerm) active.push(`Search: "${searchTerm}"`);
@@ -253,8 +255,8 @@ export default function App() {
 
   // Active filters tracker
   const [activeFilters, setActiveFilters] = React.useState<ActiveFilters>({
-    doctor: '',
-    department: '',
+    doctors: [],
+    departments: [],
     role: '',
     statuses: [],
     startDate: '',
@@ -366,8 +368,8 @@ export default function App() {
 
   const handleResetFilters = () => {
     setActiveFilters({
-      doctor: '',
-      department: '',
+      doctors: [],
+      departments: [],
       role: '',
       statuses: [],
       startDate: '',
@@ -379,8 +381,12 @@ export default function App() {
 
   const handleRemoveFilterTag = (type: keyof ActiveFilters, value?: string) => {
     const updated = { ...activeFilters };
-    if (type === 'doctor' || type === 'department' || type === 'role' || type === 'startDate' || type === 'endDate') {
+    if (type === 'role' || type === 'startDate' || type === 'endDate') {
       (updated as any)[type] = '';
+    } else if (type === 'doctors' && value) {
+      updated.doctors = updated.doctors.filter(d => d !== value);
+    } else if (type === 'departments' && value) {
+      updated.departments = updated.departments.filter(d => d !== value);
     } else if (type === 'statuses' && value) {
       updated.statuses = updated.statuses.filter(s => s !== value);
     } else if (type === 'labels' && value) {
@@ -411,8 +417,8 @@ export default function App() {
 
     const team = getCareTeam(p);
 
-    const matchesDoctor = !activeFilters.doctor || team.some(m => m.doctor === activeFilters.doctor);
-    const matchesDept = !activeFilters.department || team.some(m => m.department === activeFilters.department);
+    const matchesDoctor = activeFilters.doctors.length === 0 || team.some(m => activeFilters.doctors.includes(m.doctor));
+    const matchesDept = activeFilters.departments.length === 0 || team.some(m => activeFilters.departments.includes(m.department));
     const matchesRole = !activeFilters.role || team.some(m => m.role === activeFilters.role);
     const matchesWard = !activeFilters.wards || activeFilters.wards.length === 0 || activeFilters.wards.includes(p.ward);
     const matchesStatus = activeFilters.statuses.length === 0 || activeFilters.statuses.includes(p.status);
@@ -482,10 +488,9 @@ export default function App() {
             >
               <Menu className="w-4.5 h-4.5 text-[#0066FF]" />
             </button>
-            <div className="flex items-baseline font-sans cursor-default select-none">
-              <span className="text-lg md:text-xl font-extrabold tracking-tight text-neutral-900">DScribe</span>
-              <span className="text-lg md:text-xl font-black text-[#0066FF] ml-0.5 animate-pulse">.</span>
-              <span className="ml-2 text-xs font-semibold text-slate-400 border-l border-slate-200/50 pl-2 hidden sm:inline">
+            <div className="flex items-center cursor-default select-none">
+              <Logo className="h-6.5 w-auto" strokeColor="stroke-slate-900" dotClassName="" />
+              <span className="ml-2 text-xs font-semibold text-slate-400 border-l border-[#e2e8f0] pl-2 hidden sm:inline pt-0.5">
                 Clinical Workspace
               </span>
             </div>
@@ -632,8 +637,18 @@ export default function App() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search active records by patient name, attending doctor, ward index, or UHID identifier..."
-                className="w-full h-12 pl-12 pr-4 bg-white/60 backdrop-blur-md border border-white/85 rounded-2xl text-xs font-black text-[#0b1c30] placeholder-slate-400/80 focus:ring-2 focus:ring-blue-500/15 outline-none shadow-[0_8px_24px_rgba(31,38,135,0.02)] transition-all"
+                className="w-full h-12 pl-12 pr-12 bg-white/60 backdrop-blur-md border border-white/85 rounded-2xl text-xs font-black text-[#0b1c30] placeholder-slate-400/80 focus:ring-2 focus:ring-blue-500/15 outline-none shadow-[0_8px_24px_rgba(31,38,135,0.02)] transition-all"
               />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-slate-150 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-colors flex items-center justify-center cursor-pointer active:scale-95"
+                  title="Clear search"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
 
             {/* Live active filter tags indicator chips directly above patient cards to avoid hidden filters problem */}
@@ -641,31 +656,31 @@ export default function App() {
               <div className="flex flex-wrap items-center gap-2.5 p-4 bg-white/45 backdrop-blur-md border border-white/70 rounded-2xl select-none shadow-sm">
                 <span className="font-black text-slate-500 uppercase tracking-wider text-[9px] mr-1">Applied Filters:</span>
                 
-                {activeFilters.doctor && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-sm border border-white/90 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-sm">
-                    <span>Doctor: {activeFilters.doctor.replace('Dr. ', '')}</span>
+                {activeFilters.doctors.map(doc => (
+                  <span key={doc} className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-sm border border-white/90 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-sm">
+                    <span>Doctor: {doc.replace('Dr. ', '')}</span>
                     <button 
-                      onClick={() => handleRemoveFilterTag('doctor')} 
+                      onClick={() => handleRemoveFilterTag('doctors', doc)} 
                       className="hover:bg-rose-100 hover:text-rose-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
-                      title="Clear Doctor Filter"
+                      title={`Clear ${doc} Filter`}
                     >
                       ×
                     </button>
                   </span>
-                )}
+                ))}
 
-                {activeFilters.department && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-sm border border-white/90 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-sm">
-                    <span>Department: {activeFilters.department}</span>
+                {activeFilters.departments.map(dept => (
+                  <span key={dept} className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-sm border border-white/90 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-sm">
+                    <span>Department: {dept}</span>
                     <button 
-                      onClick={() => handleRemoveFilterTag('department')} 
+                      onClick={() => handleRemoveFilterTag('departments', dept)} 
                       className="hover:bg-rose-100 hover:text-rose-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
-                      title="Clear Department Filter"
+                      title={`Clear text-slate-700 ${dept} Filter`}
                     >
                       ×
                     </button>
                   </span>
-                )}
+                ))}
 
                 {activeFilters.role && (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-sm border border-white/90 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-sm">
@@ -770,6 +785,7 @@ export default function App() {
                         onEdit={triggerEditPatient}
                         onDelete={handleDeletePatient}
                         onStatusChange={handleStatusChange}
+                        searchTerm={searchTerm}
                       />
                     ))}
                   </div>
@@ -797,197 +813,12 @@ export default function App() {
             onShowToast={addToast}
           />
         ) : activeTab === 'upload' ? (
-          <main className="flex-1 p-4 md:p-8 space-y-6 lg:pl-72 pb-24 select-none animate-fadeIn">
-            <div>
-              <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">Upload Clinical Documents</h1>
-              <p className="text-xs text-slate-500 mt-0.5">Securely ingest medical records, imaging, or consent waivers into DScribe database schemas.</p>
-            </div>
-
-            <div className="grid grid-cols-1 xl:grid-cols-5 gap-6 items-start">
-              
-              {/* Left Column: Interactive Form (3 cols) */}
-              <div className="xl:col-span-3 bg-white/55 backdrop-blur-md border border-white/85 rounded-2xl p-6 shadow-sm space-y-5">
-                <div className="border-b border-white/40 pb-3">
-                  <h3 className="text-xs font-black text-slate-850 uppercase tracking-widest">Document Ingestion Docket</h3>
-                  <p className="text-[10px] text-slate-400 mt-0.5 font-bold uppercase tracking-wide">Specify document attributes below to catalog on central server</p>
-                </div>
-
-                <form onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!ingestFileName.trim()) {
-                    addToast('Please enter a secure filename.', 'warning');
-                    return;
-                  }
-                  if (!ingestPatientId) {
-                    addToast('Please select a patient file from the active registry.', 'warning');
-                    return;
-                  }
-                  const targetPatient = patients.find(p => p.id === ingestPatientId);
-                  if (!targetPatient) return;
-
-                  const finalFname = ingestFileName.endsWith('.pdf') || ingestFileName.endsWith('.jpg') || ingestFileName.endsWith('.doc') 
-                    ? ingestFileName 
-                    : ingestFileName + '.pdf';
-
-                  const newFile: MRDFile = {
-                    id: `mrd-${Math.floor(1000 + Math.random() * 9200)}-x`,
-                    fileName: finalFname,
-                    patientName: targetPatient.name,
-                    uhid: targetPatient.uhid,
-                    category: ingestCategory,
-                    uploadDate: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) + `, ${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`,
-                    status: 'Pending Review',
-                    securityLevel: 'High',
-                    fileSize: `${(Math.random() * 2 + 1.2).toFixed(1)} MB`,
-                    authoredBy: 'Dr. Sarah Chen',
-                    notes: ingestNotes.trim() || 'Uploaded via central ingest desk. Awaiting biometric review.',
-                    previewUrl: ingestCategory === 'Imaging' 
-                      ? 'https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&q=80&w=600'
-                      : 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=600'
-                  };
-
-                  setFiles(prev => [newFile, ...prev]);
-                  addToast(`Successfully ingested and encrypted document "${finalFname}" linked to patient ${targetPatient.name}!`, 'success');
-                  
-                  // reset states
-                  setIngestFileName('');
-                  setIngestPatientId('');
-                  setIngestCategory('Clinical');
-                  setIngestNotes('');
-                  setActiveTab('mrd-files');
-                }} className="space-y-4">
-                  
-                  {/* File Name input */}
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">File Name / Document Index Line</label>
-                    <input 
-                      type="text" 
-                      required
-                      value={ingestFileName}
-                      onChange={(e) => setIngestFileName(e.target.value)}
-                      placeholder="e.g. Lab_Hemoglobin_Summary_A"
-                      className="w-full h-11 px-4 bg-white/70 border border-white rounded-xl text-xs font-black placeholder-slate-400/80 focus:ring-2 focus:ring-blue-500/10 outline-none transition-all text-slate-800 shadow-sm"
-                    />
-                  </div>
-
-                  {/* Registered Patient select */}
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">Link Registered Patient Dossier</label>
-                    <div className="relative">
-                      <select
-                        required
-                        value={ingestPatientId}
-                        onChange={(e) => setIngestPatientId(e.target.value)}
-                        className="w-full h-11 px-4 bg-white/70 border border-white rounded-xl text-xs font-black focus:ring-2 focus:ring-blue-500/10 outline-none transition-all text-slate-800 cursor-pointer shadow-sm"
-                      >
-                        <option value="">-- Choose Registered In-Patient --</option>
-                        {patients.map(p => (
-                          <option key={p.id} value={p.id}>{p.name} (UHID: {p.uhid} • Bed: {p.bed})</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Category Grid */}
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">Clinical Classification</label>
-                    <div className="grid grid-cols-3 gap-3">
-                      {(['Clinical', 'Imaging', 'Administrative'] as const).map(cat => {
-                        const isActive = ingestCategory === cat;
-                        return (
-                          <button
-                            key={cat}
-                            type="button"
-                            onClick={() => setIngestCategory(cat)}
-                            className={`h-11 rounded-xl text-xs font-black border transition-all cursor-pointer ${
-                              isActive 
-                                ? 'bg-blue-600/10 border-blue-500 text-blue-700 shadow-sm'
-                                : 'border-white/60 bg-white/45 hover:bg-white text-slate-550 shadow-sm hover:shadow-md'
-                            }`}
-                          >
-                            {cat}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Document Notes text area */}
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">Admissions Notes / Diagnostic Highlights</label>
-                    <textarea 
-                      rows={3}
-                      value={ingestNotes}
-                      onChange={(e) => setIngestNotes(e.target.value)}
-                      placeholder="Enter relevant diagnostic findings, clinical caveats, or triage comments here..."
-                      className="w-full p-4 bg-white/70 border border-white rounded-xl text-xs font-black placeholder-slate-400/80 focus:ring-2 focus:ring-blue-500/10 outline-none transition-all text-slate-800 resize-none shadow-sm"
-                    />
-                  </div>
-
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white border border-blue-500/35 rounded-xl text-xs font-black shadow-[0_8px_16px_rgba(0,102,255,0.2)] hover:shadow-inner uppercase tracking-wider transition-all flex items-center justify-center gap-2 active:scale-98 cursor-pointer"
-                  >
-                    <FolderLock className="w-4 h-4" />
-                    <span>Secure Ingest Document</span>
-                  </button>
-                </form>
-              </div>
-
-              {/* Right Column: Visual Dropzone and Audit Log (2 cols) */}
-              <div className="xl:col-span-2 space-y-6">
-                
-                {/* Drag and Drop Zone */}
-                <div 
-                  onClick={() => {
-                    // prefill a template to make it fun & interactive for clicks 
-                    const presets = [
-                      { f: 'PACS_MRI_Brain_Scan.jpg', c: 'Imaging' as const, n: 'Slight cerebellar displacement noted. Verify with specialist.' },
-                      { f: 'Urinary_Analysis_BatchB.pdf', c: 'Clinical' as const, n: 'All chemical biomarkers within reference ranges.' },
-                      { f: 'HIPAA_Consent_Signed.pdf', c: 'Administrative' as const, n: 'Patient signs complete treatment disclosure document.' }
-                    ];
-                    const selected = presets[Math.floor(Math.random() * presets.length)];
-                    setIngestFileName(selected.f.replace('.pdf', '').replace('.jpg', ''));
-                    setIngestCategory(selected.c);
-                    setIngestNotes(selected.n);
-                    addToast(`Loaded preset info for "${selected.f}". Verify details and submit to save!`, 'info');
-                  }}
-                  className="border border-dashed border-white/80 hover:border-blue-500/80 bg-white/45 backdrop-blur-md rounded-3xl p-8 py-12 text-center cursor-pointer transition-all duration-300 select-none group flex flex-col items-center shadow-sm hover:shadow-md hover:bg-white/55"
-                >
-                  <div className="w-12 h-12 bg-white border border-white/85 shadow-sm rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <FolderLock className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-snug">Drag & Drop Documents Here</h3>
-                  <p className="text-[10px] text-slate-400 mt-2 font-bold uppercase tracking-wide max-w-xs mx-auto leading-normal">
-                    Supports DICOM, PACS scan imagery, or standard PDFs. Click to auto-load a sample mock template record!
-                  </p>
-                  <span className="inline-block mt-4 px-3 py-1.5 bg-white/85 hover:bg-blue-600 hover:text-white text-slate-700 rounded-xl text-[9px] font-black uppercase tracking-wider border border-white/95 shadow-sm hover:shadow-md transition-all active:scale-95">
-                    Quick Sample Loader
-                  </span>
-                </div>
-
-                {/* Audit Guidelines */}
-                <div className="p-5 bg-white/55 backdrop-blur-md border border-white/85 rounded-2xl space-y-3.5 shadow-sm hover:shadow-md transition-all duration-300 animate-fadeIn">
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#0066FF] animate-pulse"></span>
-                    <h4 className="text-[8px] font-black text-slate-500 uppercase tracking-widest leading-none">Active Ingestion protocol</h4>
-                  </div>
-                  <div className="text-[10px] text-slate-500 space-y-2.5 leading-relaxed font-black uppercase tracking-wide">
-                    <p className="flex items-start gap-1.5">
-                      <span className="text-blue-500 shrink-0">•</span>
-                      <span>Transmitted clinical objects subject to AES-256 client encryption before filesystem entry.</span>
-                    </p>
-                    <p className="flex items-start gap-1.5">
-                      <span className="text-blue-500 shrink-0">•</span>
-                      <span>System sessions are automatically audited under physician badge level clearances.</span>
-                    </p>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </main>
+          <ScribeWorkbench 
+            patients={patients}
+            onAddFile={(newFile) => setFiles(prev => [newFile, ...prev])}
+            setActiveTab={setActiveTab}
+            onShowToast={addToast}
+          />
         ) : activeTab === 'analytics' ? (
           <main className="flex-1 p-4 md:p-8 space-y-6 lg:pl-72 pb-24 select-none animate-fadeIn">
             <div>
@@ -1198,9 +1029,8 @@ export default function App() {
               >
                 {/* Brand Banner */}
                 <div className="h-16 flex items-center px-5 border-b border-[#e2e8f0] justify-between bg-white">
-                  <div className="flex items-baseline font-sans">
-                    <span className="text-xl font-extrabold tracking-tight text-neutral-900">DScribe</span>
-                    <span className="text-xl font-black text-[#0066FF] ml-0.5 animate-pulse">.</span>
+                  <div className="flex items-center">
+                    <Logo className="h-7 w-auto" strokeColor="stroke-slate-850" dotClassName="" />
                   </div>
                   <button onClick={() => setIsMobileMenuOpen(false)} className="p-1 hover:bg-slate-100 rounded">
                     <X className="w-5 h-5 text-slate-500" />

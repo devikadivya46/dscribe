@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import Logo from './Logo';
 import {
   Users,
   FolderLock,
@@ -14,7 +15,8 @@ import {
   Pill,
   Sparkles,
   LifeBuoy,
-  Accessibility
+  Accessibility,
+  Mic
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -64,9 +66,9 @@ export default function Sidebar({
     },
     {
       id: 'upload',
-      label: 'Upload Documents',
-      icon: UploadCloud,
-      color: 'text-emerald-600'
+      label: 'AI Ambient Scribe',
+      icon: Mic,
+      color: 'text-blue-600'
     },
     {
       id: 'analytics',
@@ -153,12 +155,11 @@ export default function Sidebar({
   return (
     <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-slate-100 h-screen fixed left-0 top-0 z-30 select-none">
       {/* Brand Header */}
-      <div className="h-16 flex items-center justify-between px-6 border-b border-slate-100 bg-white">
-        <div className="flex items-baseline font-sans">
-          <span className="text-xl font-black tracking-tight text-neutral-900">DScribe</span>
-          <span className="text-xl font-black text-[#0066FF] ml-0.5 animate-pulse">.</span>
+      <div className="h-16 flex items-center justify-between px-5 border-b border-slate-100 bg-white">
+        <div className="flex items-center">
+          <Logo className="h-7 w-auto" strokeColor="stroke-slate-800" dotClassName="" />
         </div>
-        <span className="text-[10px] px-2.5 py-0.5 font-bold uppercase bg-white border border-slate-200 text-slate-500 rounded-full shadow-sm tracking-wider leading-none">
+        <span className="text-[10px] px-2 py-0.5 font-bold uppercase bg-white border border-slate-200 text-slate-500 rounded-full shadow-sm tracking-wider leading-none">
           v2.4
         </span>
       </div>

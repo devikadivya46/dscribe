@@ -1,8 +1,9 @@
 import React from 'react';
-import { FileText, MapPin, X } from 'lucide-react';
+import { FileText, MapPin, X, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Patient } from '../types';
 import { getPrimaryDoctor, getCareTeam, roleChipClass, departmentChipClass } from '../careTeam';
+import { downloadPatientReport } from '../utils/reportGenerator';
 
 interface PatientDetailsModalProps {
   patient: Patient | null;
@@ -118,14 +119,24 @@ export default function PatientDetailsModal({ patient, onClose, onEdit }: Patien
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Current status</p>
                   <p className="mt-3 text-sm font-black text-slate-950">{patient.status}</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => onEdit(patient)}
-                  className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-xs font-black uppercase text-white shadow-sm hover:bg-blue-700"
-                >
-                  <FileText className="w-4 h-4" />
-                  Edit
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => downloadPatientReport(patient)}
+                    className="inline-flex items-center gap-2 rounded-full bg-slate-200/80 text-slate-700 px-4 py-2 text-xs font-black uppercase shadow-sm hover:bg-slate-300/80 hover:text-slate-900 transition-colors cursor-pointer"
+                  >
+                    <Download className="w-4 h-4 text-blue-600" />
+                    Download Report
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onEdit(patient)}
+                    className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-xs font-black uppercase text-white shadow-sm hover:bg-blue-700 cursor-pointer"
+                  >
+                    <FileText className="w-4 h-4" />
+                    Edit
+                  </button>
+                </div>
               </div>
             </div>
           </div>

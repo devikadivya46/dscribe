@@ -123,8 +123,8 @@ export default function FilterDrawer({ isOpen, onClose, filters, onApply, onRese
 
   const handleReset = () => {
     const emptyFilters: ActiveFilters = {
-      doctor: '',
-      department: '',
+      doctors: [],
+      departments: [],
       role: '',
       statuses: [],
       startDate: '',
@@ -200,40 +200,64 @@ export default function FilterDrawer({ isOpen, onClose, filters, onApply, onRese
               {/* SECTION: Doctor Selection */}
               <div className="space-y-2">
                 <label className="block text-[11px] font-black text-slate-400 uppercase tracking-wider">
-                  Doctor
+                  Attending Doctors (Multi-Select)
                 </label>
-                <div className="relative">
-                  <select 
-                    value={localFilters.doctor}
-                    onChange={(e) => setLocalFilters({ ...localFilters, doctor: e.target.value })}
-                    className="w-full h-12 px-4 bg-[#f1f3f9] border border-white/80 rounded-full text-slate-800 font-extrabold appearance-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none shadow-nm-inset-small transition-all text-xs cursor-pointer"
-                  >
-                    <option value="">Any Doctor</option>
-                    {doctorsList.map(doc => (
-                      <option key={doc} value={doc}>{doc}</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="w-4 h-4 text-slate-500 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <div className="flex flex-wrap gap-2">
+                  {doctorsList.map((doc) => {
+                    const isChecked = localFilters.doctors.includes(doc);
+                    return (
+                      <button
+                        key={doc}
+                        type="button"
+                        onClick={() => {
+                          const newDoctors = isChecked
+                            ? localFilters.doctors.filter(d => d !== doc)
+                            : [...localFilters.doctors, doc];
+                          setLocalFilters({ ...localFilters, doctors: newDoctors });
+                        }}
+                        className={`px-3 py-1.5 rounded-full border text-[11px] font-extrabold transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
+                          isChecked
+                            ? 'bg-[#0066FF] text-white border-blue-500 shadow-sm'
+                            : 'bg-[#f1f3f9] border-white/80 text-slate-700 shadow-nm-button hover:bg-[#ebedf4]'
+                        }`}
+                      >
+                        <span>{doc}</span>
+                        {isChecked && <Check className="w-3 h-3 text-white shrink-0 stroke-[3]" />}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
               {/* SECTION: Department Selection */}
               <div className="space-y-2">
                 <label className="block text-[11px] font-black text-slate-400 uppercase tracking-wider">
-                  Department
+                  Departments (Multi-Select)
                 </label>
-                <div className="relative">
-                  <select 
-                    value={localFilters.department}
-                    onChange={(e) => setLocalFilters({ ...localFilters, department: e.target.value })}
-                    className="w-full h-12 px-4 bg-[#f1f3f9] border border-white/80 rounded-full text-slate-800 font-extrabold appearance-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none shadow-nm-inset-small transition-all text-xs cursor-pointer"
-                  >
-                    <option value="">Any Department</option>
-                    {departmentsList.map(dept => (
-                      <option key={dept} value={dept}>{dept}</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="w-4 h-4 text-slate-500 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <div className="flex flex-wrap gap-2">
+                  {departmentsList.map((dept) => {
+                    const isChecked = localFilters.departments.includes(dept);
+                    return (
+                      <button
+                        key={dept}
+                        type="button"
+                        onClick={() => {
+                          const newDepts = isChecked
+                            ? localFilters.departments.filter(d => d !== dept)
+                            : [...localFilters.departments, dept];
+                          setLocalFilters({ ...localFilters, departments: newDepts });
+                        }}
+                        className={`px-3 py-1.5 rounded-full border text-[11px] font-extrabold transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
+                          isChecked
+                            ? 'bg-[#0066FF] text-white border-blue-500 shadow-sm'
+                            : 'bg-[#f1f3f9] border-white/80 text-slate-700 shadow-nm-button hover:bg-[#ebedf4]'
+                        }`}
+                      >
+                        <span>{dept}</span>
+                        {isChecked && <Check className="w-3 h-3 text-white shrink-0 stroke-[3]" />}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 

@@ -1,7 +1,8 @@
 import React from 'react';
-import { BedDouble, FileText, HeartPulse, Stethoscope, UsersRound, X } from 'lucide-react';
+import { BedDouble, FileText, HeartPulse, Stethoscope, UsersRound, X, Download } from 'lucide-react';
 import { Patient } from '../types';
 import { departmentAbbreviation, departmentChipClass, getCareTeam, getDepartments, getPrimaryDoctor, roleChipClass } from '../careTeam';
+import { downloadPatientReport } from '../utils/reportGenerator';
 
 interface PatientInspectPaneProps {
   patient: Patient | null;
@@ -310,18 +311,27 @@ export default function PatientInspectPane({ patient, onClose, onEdit }: Patient
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-2">
+      <div className="mt-4 grid grid-cols-3 gap-1.5">
         <button
           type="button"
           onClick={() => onEdit(patient)}
-          className="h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-xs font-black flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+          className="h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-[11px] font-black flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
         >
           <FileText className="w-3.5 h-3.5" />
           Edit
         </button>
         <button
           type="button"
-          className="h-10 bg-white hover:bg-slate-50 border border-slate-100 text-slate-700 rounded-full text-xs font-black flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+          onClick={() => downloadPatientReport(patient)}
+          className="h-10 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-full text-[11px] font-black flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
+          title="Download patient report dossier"
+        >
+          <Download className="w-3.5 h-3.5 text-blue-600" />
+          Report
+        </button>
+        <button
+          type="button"
+          className="h-10 bg-white hover:bg-slate-50 border border-slate-100 text-slate-700 rounded-full text-[11px] font-black flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
         >
           <HeartPulse className="w-3.5 h-3.5 text-rose-500" />
           Rounds

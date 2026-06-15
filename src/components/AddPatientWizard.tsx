@@ -65,6 +65,7 @@ export default function AddPatientWizard({ isOpen, onClose, onSave, initialPatie
   const [referredBy, setReferredBy] = React.useState('');
   const [uploadedDocsCount, setUploadedDocsCount] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
+  const [selectedLabels, setSelectedLabels] = React.useState<('Payment Defaulter' | 'Insurance' | 'High Priority')[]>([]);
 
   // Sync state on load or edit modal change
   React.useEffect(() => {
@@ -94,6 +95,7 @@ export default function AddPatientWizard({ isOpen, onClose, onSave, initialPatie
       setPlan(initialPatient.plan || 'Insurance Covered');
       setReferredBy(initialPatient.referredBy || 'Central Clinic');
       setUploadedDocsCount(initialPatient.uploadedDocsCount ?? 2);
+      setSelectedLabels(initialPatient.labels || []);
       setStep(1);
     } else {
       // Clear all state for fresh new intake
@@ -120,6 +122,7 @@ export default function AddPatientWizard({ isOpen, onClose, onSave, initialPatie
       setPlan('Insurance Covered');
       setReferredBy('');
       setUploadedDocsCount(0);
+      setSelectedLabels([]);
       setStep(1);
     }
     setErrorMsg('');
@@ -222,12 +225,7 @@ export default function AddPatientWizard({ isOpen, onClose, onSave, initialPatie
       setStep(2);
     } else if (step === 2) {
       if (careTeamList.length === 0) {
-        setErrorMsg('At least one doctor (Primary Consultant) is required on the Care Team.');
-        return;
-      }
-      const hasPrimary = careTeamList.some(m => m.role === 'Primary Consultant');
-      if (!hasPrimary) {
-        setErrorMsg('Please assign exactly one Primary Consultant as the single care plan owner.');
+        setErrorMsg('Please assign at least one doctor / specialist practitioner to the care team.');
         return;
       }
       if (!bed.trim()) {
@@ -266,9 +264,6 @@ export default function AddPatientWizard({ isOpen, onClose, onSave, initialPatie
     const finalDepartment = primaryMember ? primaryMember.department : ('General Medicine' as DepartmentName);
     const finalDepartments = Array.from(new Set(finalCareTeam.map(m => m.department))) as DepartmentName[];
 
-    // Status should auto map: if High Priority is checked or we simulate status as "Provisional Admission" by default
-    const isHighPriority = labelSelection().includes('High Priority');
-    
     // Status is Provisional Admission by default or preserved from existing
     const finalStatus = initialPatient?.status || 'Provisional Admission';
 
@@ -291,8 +286,7 @@ export default function AddPatientWizard({ isOpen, onClose, onSave, initialPatie
       crossConsultant: finalCareTeam.find(m => m.role === 'Cross Consultant')?.doctor || 'None',
       careTeam: finalCareTeam,
       status: finalStatus,
-      // Default labels based on metadata
-      labels: labelSelection(),
+      labels: selectedLabels,
       admissionDate,
       plan,
       referredBy: referredBy.trim() || 'Direct Attending Walk-in',
@@ -625,7 +619,7 @@ export default function AddPatientWizard({ isOpen, onClose, onSave, initialPatie
                         </div>
                       </div>
 
-                      {member.role !== 'Primary Consultant' && (
+                      {careTeamList.length > 1 && (
                         <div className="flex justify-end pt-1">
                           <button
                             type="button"
@@ -780,6 +774,50 @@ export default function AddPatientWizard({ isOpen, onClose, onSave, initialPatie
                   placeholder="e.g. Dr. Ashok Kumar or Walk-in emergency"
                   className="w-full h-14 px-4 bg-[#f1f3f9] border border-white/80 rounded-xl text-sm font-extrabold text-slate-900 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none shadow-nm-inset-small transition-all"
                 />
+              </div>
+
+              {/* Manual Labels/Flags Selection - Custom Multiple Choice */}
+              <div className="p-5 bg-white/75 border border-white/80 shadow-nm-inset-small rounded-2xl space-y-3.5">
+                <div>
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block">
+                    Select Patient Flags & Labels (Manual Selection)
+                  </span>
+                  <span className="text-[9px] text-slate-400 font-bold block mt-0.5">
+                    Click to attach or detach clinical conditions and billing statuses.
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {([
+                    { id: 'Insurance', display: '🎗️ Insurance Covered', color: 'border-blue-200 hover:bg-blue-50 text-blue-800' },
+                    { id: 'High Priority', display: '🚨 High Priority', color: 'border-red-200 hover:bg-red-50 text-red-800' },
+                    { id: 'Payment Defaulter', display: '⚠️ Payment Defaulter', color: 'border-amber-200 hover:bg-amber-50 text-amber-800' }
+                  ] as const).map((lbl) => {
+                    const isSelected = selectedLabels.includes(lbl.id);
+                    return (
+                      <button
+                        key={lbl.id}
+                        type="button"
+                        onClick={() => {
+                          if (isSelected) {
+                            setSelectedLabels(selectedLabels.filter(x => x !== lbl.id));
+                          } else {
+                            setSelectedLabels([...selectedLabels, lbl.id]);
+                          }
+                        }}
+                        className={`px-3.5 py-2.5 rounded-xl border text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
+                          isSelected
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-[0_4px_12px_rgba(0,102,255,0.25)]'
+                            : `bg-slate-50/50 text-slate-650 border-slate-150 ${lbl.color}`
+                        }`}
+                      >
+                        <span className="text-[11px] font-black">{lbl.display}</span>
+                        {isSelected && (
+                          <span className="w-4 h-4 rounded-full bg-white/20 text-white flex items-center justify-center text-[8px] font-extrabold">✓</span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Upload Documents simulated Section */}

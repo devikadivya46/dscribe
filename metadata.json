@@ -1,6 +1,6 @@
 {
-  "name": "Clinical Nexus",
-  "description": "High-fidelity clinical dashboard for managing in-patient admission workflows, active patient registries, filter controls, and medical record files (MRD).",
+  "name": "DScribe Clinical Nexus",
+  "description": "Premium clinical AI assistant and ambient scripter console for automated SOAP charting, secure record indexation, and triage analytics.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
