@@ -8,7 +8,8 @@ import {
   PenTool,
   Printer,
   ShieldAlert,
-  Download
+  Download,
+  Users
 } from 'lucide-react';
 import { Patient } from '../types';
 import { getCareTeam, getPrimaryDoctor } from '../careTeam';
@@ -29,22 +30,22 @@ interface PatientCardProps {
 
 const statusConfig = {
   'Provisional Admission': {
-    bg: 'bg-sky-50 border-sky-200 text-sky-800',
+    bg: 'bg-sky-50 text-sky-700 ring-1 ring-sky-200/70',
     dot: 'bg-sky-500',
     bar: 'bg-sky-500'
   },
   'MRD Pending': {
-    bg: 'bg-blue-50 border-blue-200 text-blue-700',
+    bg: 'bg-blue-50 text-blue-700 ring-1 ring-blue-200/70',
     dot: 'bg-blue-500',
     bar: 'bg-blue-500'
   },
   Completed: {
-    bg: 'bg-slate-100 border-slate-200 text-slate-600',
+    bg: 'bg-slate-100 text-slate-700 ring-1 ring-slate-300/80',
     dot: 'bg-slate-400',
     bar: 'bg-slate-400'
   },
   Discharged: {
-    bg: 'bg-slate-100 border-slate-200 text-slate-600',
+    bg: 'bg-slate-100 text-slate-700 ring-1 ring-slate-300/80',
     dot: 'bg-slate-400',
     bar: 'bg-slate-400'
   }
@@ -58,9 +59,9 @@ const cardBackgrounds = {
 };
 
 const labelStyles = {
-  'Payment Defaulter': 'bg-slate-100 text-slate-700 border-slate-200',
-  Insurance: 'bg-blue-50 text-blue-700 border-blue-200',
-  'High Priority': 'bg-sky-50 text-sky-700 border-sky-200'
+  'Payment Defaulter': 'bg-slate-950/5 text-slate-950 ring-1 ring-slate-200/80',
+  Insurance: 'bg-sky-50 text-sky-700 ring-1 ring-sky-200/80',
+  'High Priority': 'bg-slate-100 text-slate-700 ring-1 ring-slate-300/80'
 };
 
 function highlightText(text: string, highlight: string) {
@@ -150,7 +151,7 @@ export default function PatientCard({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.32, delay: Math.min(index * 0.035, 0.22), ease: 'easeOut' }}
-        className={`relative overflow-hidden rounded-3xl transition-all duration-300 p-4 pr-3 pl-6 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
+        className={`relative overflow-visible rounded-3xl transition-all duration-300 p-4 pr-3 pl-6 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
           isSelected
             ? 'border-blue-500 bg-gradient-to-r from-blue-50/10 via-white to-white shadow-[0_10px_24px_rgba(37,99,235,0.07)] ring-4 ring-blue-100/50'
             : `border-slate-100/90 bg-gradient-to-br ${cardBackgrounds[resolvedStatus as keyof typeof cardBackgrounds]} hover:-translate-y-0.5 hover:border-slate-200`
@@ -181,11 +182,11 @@ export default function PatientCard({
               <p className="text-[10px] font-semibold text-slate-500 mt-0.5">{patient.gender} • {patient.age}y</p>
               
               <div className="flex flex-wrap items-center gap-1 mt-1">
-                <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider shrink-0 border ${currentStatusConfig.bg}`}>
+                <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-semibold uppercase tracking-[0.16em] shrink-0 ${currentStatusConfig.bg}`}>
                   {resolvedStatus === 'Provisional Admission' ? 'Provisional' : resolvedStatus}
                 </span>
                 {patient.labels?.slice(0, 1).map((label) => (
-                  <span key={label} className={`inline-flex items-center px-1.5 py-0.5 rounded border text-[8px] font-black uppercase tracking-wider ${labelStyles[label as keyof typeof labelStyles] || 'bg-slate-50 text-slate-600 border-slate-100'}`}>
+                  <span key={label} className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-semibold uppercase tracking-[0.16em] shrink-0 ${labelStyles[label as keyof typeof labelStyles] || 'bg-slate-50 text-slate-600 ring-1 ring-slate-200/70'}`}>
                     {label}
                   </span>
                 ))}
@@ -208,7 +209,7 @@ export default function PatientCard({
               {showMenu && (
                 <div
                   ref={menuRef}
-                  className="absolute right-0 top-9 w-[190px] bg-white border border-slate-200/70 rounded-2xl shadow-[0_18px_45px_rgba(15,23,42,0.14)] py-2 z-[55] text-xs text-left"
+                  className="absolute right-0 top-full mt-2 w-[190px] bg-white border border-slate-200/70 rounded-2xl shadow-[0_18px_45px_rgba(15,23,42,0.14)] py-2 z-[55] text-xs text-left"
                 >
                   <button onClick={(e) => handleActionClick(e, () => { openDetails(); setShowMenu(false); })} className="w-full text-left px-3 py-2 font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2">
                     <FileText className="w-3.5 h-3.5 text-sky-600" />
@@ -279,7 +280,10 @@ export default function PatientCard({
             </div>
 
             {/* Overlapping care avatars */}
-            <div className="flex items-center gap-1 shrink-0 bg-slate-50/50 p-1 rounded-lg">
+            <div className="flex items-center gap-2 shrink-0 bg-slate-50/50 p-1 rounded-lg">
+              <div className="flex items-center justify-center w-7 h-7 rounded-2xl bg-sky-50 text-sky-600">
+                <Users className="w-4 h-4" />
+              </div>
               <div className="flex items-center shrink-0">
                 {visibleCareTeam.map((member, i) => (
                   member.avatar ? (
@@ -387,11 +391,11 @@ export default function PatientCard({
             
             {/* Status and label chips */}
             <div className="flex flex-wrap items-center gap-1 mt-2">
-              <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8.5px] font-black uppercase tracking-wider shrink-0 border ${currentStatusConfig.bg}`}>
+              <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-semibold uppercase tracking-[0.16em] shrink-0 ${currentStatusConfig.bg}`}>
                 {resolvedStatus === 'Provisional Admission' ? 'Provisional' : resolvedStatus}
               </span>
               {patient.labels?.slice(0, 1).map((label) => (
-                <span key={label} className={`inline-flex items-center px-1.5 py-0.5 rounded border text-[8.5px] font-black uppercase tracking-wider ${labelStyles[label as keyof typeof labelStyles] || 'bg-slate-50 text-slate-600 border-slate-100'}`}>
+                <span key={label} className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-semibold uppercase tracking-[0.16em] shrink-0 ${labelStyles[label as keyof typeof labelStyles] || 'bg-slate-50 text-slate-600 ring-1 ring-slate-200/70'}`}>
                   {label}
                 </span>
               ))}
@@ -451,7 +455,21 @@ export default function PatientCard({
         </div>
 
         {/* Col 4: Overlapping Care Team Avatars Stack (Col span 2) */}
-        <div className="lg:col-span-2 flex items-center gap-2 border-l lg:border-l border-slate-100 pl-0 lg:pl-5 justify-between lg:justify-start">
+        <div className="lg:col-span-2 flex items-center gap-3 border-l lg:border-l border-slate-100 pl-0 lg:pl-5 justify-between lg:justify-start">
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center justify-center w-8 h-8 rounded-2xl bg-sky-50 text-sky-600">
+              <Users className="w-4 h-4" />
+            </div>
+            <div className="text-left">
+              <p className="flex items-center gap-1 text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                <Users className="w-3.5 h-3.5 text-sky-500" />
+                Care Team
+              </p>
+              <span className="text-[10px] font-bold text-slate-600 mt-1 block">
+                {careTeam.length} members
+              </span>
+            </div>
+          </div>
           <div className="flex items-center shrink-0">
             {visibleCareTeam.map((member, i) => (
               member.avatar ? (
@@ -476,12 +494,6 @@ export default function PatientCard({
               </div>
             )}
           </div>
-          <div className="text-left">
-            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Care Team</p>
-            <span className="text-[10px] font-bold text-slate-600 mt-1 block">
-              {careTeam.length} members
-            </span>
-          </div>
         </div>
 
         {/* Col 5: Action Toolbar Trigger Buttons (Col span 1) */}
@@ -501,7 +513,7 @@ export default function PatientCard({
             {showMenu && (
               <div
                 ref={menuRef}
-                className="absolute right-0 top-10 w-[200px] bg-white border border-slate-150/70 rounded-2xl shadow-[0_18px_45px_rgba(15,23,42,0.14)] py-2 z-55 text-xs text-left"
+                className="absolute right-0 top-full mt-2 w-[200px] bg-white border border-slate-150/70 rounded-2xl shadow-[0_18px_45px_rgba(15,23,42,0.14)] py-2 z-[55] text-xs text-left"
               >
                 <button onClick={(e) => handleActionClick(e, () => { openDetails(); setShowMenu(false); })} className="w-full text-left px-3 py-2 font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2">
                   <FileText className="w-3.5 h-3.5 text-sky-600" />
