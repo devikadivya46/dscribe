@@ -70,7 +70,7 @@ export default function SupportTeam({ tickets, onResolve, onShowToast }: Support
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-rose-500 items-center justify-center shadow-card shrink-0">
+          <div className="hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-rose-600 items-center justify-center shadow-card shrink-0">
             <LifeBuoy className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -100,7 +100,7 @@ export default function SupportTeam({ tickets, onResolve, onShowToast }: Support
               <div className="flex items-center justify-between">
                 <span className={`text-[10px] font-black uppercase tracking-widest ${stat.labelColor}`}>{stat.label}</span>
                 <div className={`w-9 h-9 rounded-full ${stat.iconBg} flex items-center justify-center`}>
-                  <StatIcon className={`w-4.5 h-4.5 ${stat.iconColor}`} />
+                  <StatIcon className={`w-5 h-5 ${stat.iconColor}`} />
                 </div>
               </div>
               <div className="mt-3">
@@ -132,7 +132,7 @@ export default function SupportTeam({ tickets, onResolve, onShowToast }: Support
               >
                 <div className="flex items-center gap-3 sm:w-1/3">
                   <div className="w-10 h-10 rounded-full bg-pastel-blue flex items-center justify-center shrink-0">
-                    <CategoryIcon className="w-4.5 h-4.5 text-[#0066FF]" />
+                    <CategoryIcon className="w-5 h-5 text-[#0066FF]" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs font-black text-slate-800 truncate">{ticket.subject}</p>

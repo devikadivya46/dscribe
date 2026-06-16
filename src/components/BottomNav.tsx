@@ -54,7 +54,7 @@ export default function BottomNav({ activeTab, setActiveTab, onAddPatientClick }
                   transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
                 />
               )}
-              <IconComponent className="w-4.5 h-4.5 relative z-10" />
+              <IconComponent className="w-5 h-5 relative z-10" />
             </div>
             <span className="text-[9px] uppercase font-bold tracking-tight mt-0.5">{item.label}</span>
           </button>

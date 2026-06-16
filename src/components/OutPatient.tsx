@@ -129,7 +129,7 @@ export default function OutPatient({ visits, doctors, onUpdateStatus, onBookAppo
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 items-center justify-center shadow-card shrink-0">
+          <div className="hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-700 items-center justify-center shadow-card shrink-0">
             <Users className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -159,7 +159,7 @@ export default function OutPatient({ visits, doctors, onUpdateStatus, onBookAppo
               <div className="flex items-center justify-between">
                 <span className={`text-[10px] font-black uppercase tracking-widest ${stat.labelColor}`}>{stat.label}</span>
                 <div className={`w-9 h-9 rounded-full ${stat.iconBg} flex items-center justify-center`}>
-                  <StatIcon className={`w-4.5 h-4.5 ${stat.iconColor}`} />
+                  <StatIcon className={`w-5 h-5 ${stat.iconColor}`} />
                 </div>
               </div>
               <div className="mt-3">
@@ -286,7 +286,7 @@ export default function OutPatient({ visits, doctors, onUpdateStatus, onBookAppo
                 className={`text-left p-4 rounded-2xl border transition-all cursor-pointer ${isSelected ? 'border-emerald-500 bg-emerald-50/50 shadow-card' : 'border-slate-100 bg-white hover:border-emerald-200 hover:shadow-card'}`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shrink-0 shadow-sm">
+                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center shrink-0 shadow-sm">
                     <SpecIcon className="w-5 h-5 text-white" />
                   </div>
                   <div className="min-w-0">
@@ -310,7 +310,7 @@ export default function OutPatient({ visits, doctors, onUpdateStatus, onBookAppo
             {/* Doctor profile card */}
             <div className="rounded-2xl border border-slate-100 bg-slate-50/60 p-5 flex flex-col sm:flex-row sm:items-center gap-5">
               <div className="flex items-center gap-4 sm:w-1/3">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shrink-0 shadow-sm">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center shrink-0 shadow-sm">
                   {(() => {
                     const SpecIcon = specialtyIcons[selectedDoctor.specialty] ?? Stethoscope;
                     return <SpecIcon className="w-7 h-7 text-white" />;

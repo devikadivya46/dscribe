@@ -807,7 +807,7 @@ export default function AddPatientWizard({ isOpen, onClose, onSave, initialPatie
                         className={`px-3.5 py-2.5 rounded-xl border text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
                           isSelected
                             ? 'bg-blue-600 text-white border-blue-600 shadow-[0_4px_12px_rgba(0,102,255,0.25)]'
-                            : `bg-slate-50/50 text-slate-650 border-slate-150 ${lbl.color}`
+                            : `bg-slate-50/50 text-slate-500 border-slate-200 ${lbl.color}`
                         }`}
                       >
                         <span className="text-[11px] font-black">{lbl.display}</span>

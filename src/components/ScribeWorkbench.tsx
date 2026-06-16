@@ -248,7 +248,7 @@ export default function ScribeWorkbench({ patients, onAddFile, setActiveTab, onS
           <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             DScribe Clinical Workspace
           </h1>
-          <p className="text-xs text-slate-550 mt-0.5 font-medium">
+          <p className="text-xs text-slate-500 mt-0.5 font-medium">
             Deploy advanced clinical AI models to draft professional charts and records automatically.
           </p>
         </div>
@@ -332,7 +332,7 @@ export default function ScribeWorkbench({ patients, onAddFile, setActiveTab, onS
 
                   {/* Diagnostic Target Details Widget info */}
                   <div className="p-3.5 bg-blue-50/50 border border-blue-100 rounded-2xl flex items-start gap-3">
-                    <AlertCircle className="w-4.5 h-4.5 text-[#0066FF] mt-0.5 shrink-0" />
+                    <AlertCircle className="w-5 h-5 text-[#0066FF] mt-0.5 shrink-0" />
                     <div className="text-[11px] leading-relaxed text-slate-650 font-medium">
                       <strong>AI Ambient Listening Mode:</strong> Placing your device microphone close to the speakers/consultation ensures precise transcription and high fidelity chart drafting.
                     </div>

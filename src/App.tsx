@@ -192,13 +192,13 @@ export default function App() {
         const stVal = patient.status || 'Active';
         doc.setFont('Helvetica', 'bold');
         if (stVal === 'Completed') {
-          doc.setTextColor(16, 185, 129); // green
+          doc.setTextColor(14, 165, 233); // sky-blue
         } else if (stVal === 'Discharged') {
           doc.setTextColor(100, 116, 139); // slate-neutral
         } else if (stVal === 'MRD Pending') {
-          doc.setTextColor(244, 63, 94); // rose-red
+          doc.setTextColor(37, 99, 235); // blue
         } else {
-          doc.setTextColor(217, 119, 6); // amber-yellow
+          doc.setTextColor(56, 189, 248); // cyan
         }
         doc.text(stVal, 178, yPosition + 2);
 
@@ -313,6 +313,13 @@ export default function App() {
     setFiles(prev => [newFile, ...prev]);
 
     setEditingPatient(null);
+  };
+
+  const handleUpdatePatient = (updatedPatient: Patient) => {
+    setPatients(prev => prev.map(p => p.id === updatedPatient.id ? updatedPatient : p));
+    if (selectedPatient?.id === updatedPatient.id) {
+      setSelectedPatient(updatedPatient);
+    }
   };
 
   const handleDeletePatient = (id: string) => {
@@ -478,18 +485,18 @@ export default function App() {
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Global Toolbar Header */}
-        <header className="h-16 border-b border-white/40 bg-white/35 backdrop-blur-md sticky top-0 z-40 px-4 md:px-8 flex items-center justify-between xl:gap-8 lg:pl-72 shadow-[0_8px_32px_rgba(31,38,135,0.03)] select-none animate-fadeIn">
+        <header className="h-16 border-b border-white/40 bg-white/70 backdrop-blur-xl sticky top-0 z-40 px-4 md:px-8 flex items-center justify-between xl:gap-8 lg:pl-72 shadow-[0_10px_36px_rgba(31,38,135,0.08)] select-none animate-fadeIn">
           <div className="flex items-center gap-3">
             {/* Desktop Hamburger trigger for mobile Drawer navigation */}
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="w-9 h-9 flex items-center justify-center bg-white/70 border border-white hover:bg-white rounded-xl text-slate-550 lg:hidden cursor-pointer shadow-sm"
+              className="w-9 h-9 flex items-center justify-center bg-white/70 border border-white hover:bg-white rounded-xl text-slate-500 lg:hidden cursor-pointer shadow-sm"
               title="Open Navigation"
             >
-              <Menu className="w-4.5 h-4.5 text-[#0066FF]" />
+              <Menu className="w-5 h-5 text-[#0066FF]" />
             </button>
             <div className="flex items-center cursor-default select-none">
-              <Logo className="h-6.5 w-auto" strokeColor="stroke-slate-900" dotClassName="" />
+              <Logo className="h-6 w-auto" strokeColor="stroke-slate-900" dotClassName="" />
               <span className="ml-2 text-xs font-semibold text-slate-400 border-l border-[#e2e8f0] pl-2 hidden sm:inline pt-0.5">
                 Clinical Workspace
               </span>
@@ -499,7 +506,7 @@ export default function App() {
           {/* Utility slots */}
           <div className="flex items-center gap-3 md:gap-4">
             <span className="hidden md:inline-flex items-center gap-1.5 px-3 py-1 bg-white/60 text-blue-700 text-xs font-black rounded-lg border border-white/80 shadow-sm">
-              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span>
+              <span className="w-1.5 h-1.5 bg-sky-500 rounded-full animate-ping"></span>
               <span>Ward 4B Active</span>
             </span>
 
@@ -518,7 +525,7 @@ export default function App() {
             >
               <Bell className="w-4 h-4 text-slate-500" />
               {(criticalPatientsCount > 0 || unverifiedFilesCount > 0) && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-600 rounded-full border border-white"></span>
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-sky-600 rounded-full border border-white"></span>
               )}
             </button>
 
@@ -572,11 +579,11 @@ export default function App() {
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 select-none">
               
               {/* Metric Card 1: Active In-Patients */}
-              <div className="p-5 bg-white/55 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgba(200,210,230,0.12)] rounded-3xl flex flex-col justify-between hover:shadow-[0_12px_36px_rgba(180,195,220,0.18)] transition-all duration-300">
+              <div className="p-5 bg-gradient-to-br from-sky-50 via-white to-cyan-50 border border-white/80 shadow-[0_10px_32px_rgba(56,139,253,0.12)] rounded-3xl flex flex-col justify-between hover:shadow-[0_14px_42px_rgba(37,99,235,0.16)] transition-all duration-300">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black text-blue-700 uppercase tracking-widest">Active Incidence</span>
+                  <span className="text-[10px] font-black text-sky-700 uppercase tracking-widest">Active Incidence</span>
                   <div className="w-9 h-9 rounded-xl bg-white border border-white/60 flex items-center justify-center shadow-sm">
-                    <Users className="w-4.5 h-4.5 text-[#0066FF]" />
+                    <Users className="w-5 h-5 text-[#0066FF]" />
                   </div>
                 </div>
                 <div className="mt-3">
@@ -586,11 +593,11 @@ export default function App() {
               </div>
 
               {/* Metric Card 2: Urgent Triage */}
-              <div className="p-5 bg-white/55 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgba(200,210,230,0.12)] rounded-3xl flex flex-col justify-between hover:shadow-[0_12px_36px_rgba(180,195,220,0.18)] transition-all duration-300">
+              <div className="p-5 bg-gradient-to-br from-slate-50 via-white to-sky-50 border border-white/80 shadow-[0_10px_32px_rgba(56,139,253,0.12)] rounded-3xl flex flex-col justify-between hover:shadow-[0_14px_42px_rgba(37,99,235,0.16)] transition-all duration-300">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black text-rose-700 uppercase tracking-widest">Critical Triage</span>
+                  <span className="text-[10px] font-black text-sky-700 uppercase tracking-widest">Critical Triage</span>
                   <div className="w-9 h-9 rounded-xl bg-white border border-white/60 flex items-center justify-center shadow-sm">
-                    <AlertTriangle className="w-4.5 h-4.5 text-rose-600 animate-pulse" />
+                    <AlertTriangle className="w-5 h-5 text-sky-600 animate-pulse" />
                   </div>
                 </div>
                 <div className="mt-3">
@@ -600,11 +607,11 @@ export default function App() {
               </div>
 
               {/* Metric Card 3: Unverified Records */}
-              <div className="p-5 bg-white/55 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgba(200,210,230,0.12)] rounded-3xl flex flex-col justify-between hover:shadow-[0_12px_36px_rgba(180,195,220,0.18)] transition-all duration-300">
+              <div className="p-5 bg-gradient-to-br from-slate-50 via-white to-sky-50 border border-white/80 shadow-[0_10px_32px_rgba(56,139,253,0.12)] rounded-3xl flex flex-col justify-between hover:shadow-[0_14px_42px_rgba(37,99,235,0.16)] transition-all duration-300">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black text-indigo-700 uppercase tracking-widest">File Compliance</span>
+                  <span className="text-[10px] font-black text-sky-700 uppercase tracking-widest">File Compliance</span>
                   <div className="w-9 h-9 rounded-xl bg-white border border-white/60 flex items-center justify-center shadow-sm">
-                    <FolderLock className="w-4.5 h-4.5 text-purple-600" />
+                    <FolderLock className="w-5 h-5 text-sky-600" />
                   </div>
                 </div>
                 <div className="mt-3">
@@ -614,11 +621,11 @@ export default function App() {
               </div>
 
               {/* Metric Card 4: Global Bed Utilization */}
-              <div className="p-5 bg-white/55 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgba(200,210,230,0.12)] rounded-3xl flex flex-col justify-between hover:shadow-[0_12px_36px_rgba(180,195,220,0.18)] transition-all duration-300">
+              <div className="p-5 bg-gradient-to-br from-slate-50 via-white to-sky-50 border border-white/80 shadow-[0_10px_32px_rgba(56,139,253,0.12)] rounded-3xl flex flex-col justify-between hover:shadow-[0_14px_42px_rgba(37,99,235,0.16)] transition-all duration-300">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Bed Allocation</span>
+                  <span className="text-[10px] font-black text-sky-700 uppercase tracking-widest">Bed Allocation</span>
                   <div className="w-9 h-9 rounded-xl bg-white border border-white/60 flex items-center justify-center shadow-sm">
-                    <Building className="w-4.5 h-4.5 text-emerald-600" />
+                    <Building className="w-5 h-5 text-sky-600" />
                   </div>
                 </div>
                 <div className="mt-3">
@@ -631,13 +638,13 @@ export default function App() {
 
             {/* Responsive Search Input Block */}
             <div className="relative group">
-              <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 group-focus-within:text-blue-600 transition-colors pointer-events-none" />
+              <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 group-focus-within:text-slate-900 transition-colors duration-[180ms] ease-out pointer-events-none" />
               <input 
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search active records by patient name, attending doctor, ward index, or UHID identifier..."
-                className="w-full h-12 pl-12 pr-12 bg-white/60 backdrop-blur-md border border-white/85 rounded-2xl text-xs font-black text-[#0b1c30] placeholder-slate-400/80 focus:ring-2 focus:ring-blue-500/15 outline-none shadow-[0_8px_24px_rgba(31,38,135,0.02)] transition-all"
+                className="w-full h-12 pl-12 pr-12 bg-white border border-slate-300 rounded-2xl text-xs font-black text-[#0b1c30] placeholder-slate-500 focus:bg-white focus:border-slate-950 focus:ring-2 focus:ring-slate-900/25 outline-none shadow-[0_12px_30px_rgba(15,23,42,0.08)] transition-all duration-[180ms] ease-out"
               />
               {searchTerm && (
                 <button
@@ -661,7 +668,7 @@ export default function App() {
                     <span>Doctor: {doc.replace('Dr. ', '')}</span>
                     <button 
                       onClick={() => handleRemoveFilterTag('doctors', doc)} 
-                      className="hover:bg-rose-100 hover:text-rose-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
+                      className="hover:bg-sky-100 hover:text-sky-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
                       title={`Clear ${doc} Filter`}
                     >
                       ×
@@ -674,8 +681,8 @@ export default function App() {
                     <span>Department: {dept}</span>
                     <button 
                       onClick={() => handleRemoveFilterTag('departments', dept)} 
-                      className="hover:bg-rose-100 hover:text-rose-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
-                      title={`Clear text-slate-700 ${dept} Filter`}
+                      className="hover:bg-sky-100 hover:text-sky-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
+                      title={`Clear ${dept} Filter`}
                     >
                       ×
                     </button>
@@ -687,7 +694,7 @@ export default function App() {
                     <span>Role: {activeFilters.role}</span>
                     <button 
                       onClick={() => handleRemoveFilterTag('role')} 
-                      className="hover:bg-rose-100 hover:text-rose-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
+                      className="hover:bg-sky-100 hover:text-sky-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
                       title="Clear Role Filter"
                     >
                       ×
@@ -700,7 +707,7 @@ export default function App() {
                     <span>Ward: {wd}</span>
                     <button 
                       onClick={() => handleRemoveFilterTag('wards', wd)} 
-                      className="hover:bg-rose-100 hover:text-rose-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
+                      className="hover:bg-sky-100 hover:text-sky-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
                       title={`Clear ${wd} Ward`}
                     >
                       ×
@@ -713,7 +720,7 @@ export default function App() {
                     <span>Status: {st}</span>
                     <button 
                       onClick={() => handleRemoveFilterTag('statuses', st)} 
-                      className="hover:bg-rose-100 hover:text-rose-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
+                      className="hover:bg-sky-100 hover:text-sky-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
                       title={`Clear ${st} Status`}
                     >
                       ×
@@ -726,7 +733,7 @@ export default function App() {
                     <span>Label: {lbl}</span>
                     <button 
                       onClick={() => handleRemoveFilterTag('labels', lbl)} 
-                      className="hover:bg-rose-100 hover:text-rose-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
+                      className="hover:bg-sky-100 hover:text-sky-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
                       title={`Clear ${lbl} Label`}
                     >
                       ×
@@ -739,7 +746,7 @@ export default function App() {
                     <span>Admissions: {activeFilters.startDate || '*'} to {activeFilters.endDate || '*'}</span>
                     <button 
                       onClick={() => { handleRemoveFilterTag('startDate'); handleRemoveFilterTag('endDate'); }} 
-                      className="hover:bg-rose-105 hover:text-rose-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
+                      className="hover:bg-sky-100 hover:text-sky-700 w-4 h-4 flex items-center justify-center font-extrabold rounded-full ml-1 text-sm cursor-pointer outline-none transition-colors"
                       title="Clear Date range"
                     >
                       ×
@@ -749,7 +756,7 @@ export default function App() {
 
                 <button 
                   onClick={handleResetFilters}
-                  className="text-xs font-black text-rose-700 hover:text-rose-900 hover:underline outline-none ml-auto cursor-pointer"
+                  className="text-xs font-black text-sky-700 hover:text-sky-900 hover:underline outline-none ml-auto cursor-pointer"
                 >
                   Clear All Filters
                 </button>
@@ -796,6 +803,7 @@ export default function App() {
                     patient={selectedPatient}
                     onClose={() => setSelectedPatient(null)}
                     onEdit={triggerEditPatient}
+                    onUpdatePatient={handleUpdatePatient}
                   />
                 )}
               </div>
@@ -838,12 +846,12 @@ export default function App() {
               </div>
 
               <div className="bg-[#f1f3f9] border border-white/60 p-5 rounded-2xl shadow-nm-flat space-y-2 hover:shadow-nm-pressed transition-all duration-300">
-                <p className="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Triage Duration</p>
+                <p className="text-[10px] font-black text-sky-700 uppercase tracking-widest">Triage Duration</p>
                 <p className="text-2xl font-black text-slate-800">14 mins</p>
                 <div className="w-full bg-[#ebedf4] border border-white/35 h-2.5 rounded-full overflow-hidden shadow-nm-inset-small">
-                  <div className="bg-emerald-500 h-full rounded-full" style={{ width: '65%' }} />
+                  <div className="bg-sky-500 h-full rounded-full" style={{ width: '65%' }} />
                 </div>
-                <p className="text-[10px] text-emerald-700 font-extrabold uppercase tracking-wide">✓ Outstanding (Within benchmark limit)</p>
+                <p className="text-[10px] text-sky-700 font-extrabold uppercase tracking-wide">✓ Outstanding (Within benchmark limit)</p>
               </div>
 
               <div className="bg-[#f1f3f9] border border-white/60 p-5 rounded-2xl shadow-nm-flat space-y-2 hover:shadow-[#ebedf4] transition-all duration-300">
@@ -865,9 +873,9 @@ export default function App() {
 
               <div className="space-y-4">
                 {[
-                  { name: 'Cardiology Department', count: 18, pct: '52%', color: 'bg-rose-500' },
-                  { name: 'Neurology Unit', count: 10, pct: '28%', color: 'bg-indigo-505' },
-                  { name: 'General Medicine & Intensive Care', count: 8, pct: '20%', color: 'bg-blue-600' }
+                  { name: 'Cardiology Department', count: 18, pct: '52%', color: 'bg-sky-500' },
+                  { name: 'Neurology Unit', count: 10, pct: '28%', color: 'bg-blue-600' },
+                  { name: 'General Medicine & Intensive Care', count: 8, pct: '20%', color: 'bg-slate-500' }
                 ].map((item, idx) => (
                   <div key={idx} className="space-y-1.5">
                     <div className="flex justify-between text-[11px] font-extrabold text-slate-705 uppercase tracking-wide">
@@ -887,8 +895,8 @@ export default function App() {
               <p className="text-[9px] text-blue-400 font-black uppercase tracking-widest leading-none">// LOCAL TELEMETRY BUFFER PROTOCOLS</p>
               <p className="text-[#64748b] leading-relaxed">[09:12 AM] Inception of document file "Lab_Report_Feb24.pdf" fully verified by credentials: Dr. Sarah Chen.</p>
               <p className="text-[#64748b] leading-relaxed">[10:00 AM] Provisional admission logged for "Evelyn Thorne" under priority "Routine". Assigned: Bed B-105.</p>
-              <p className="text-emerald-500/80 animate-pulse flex items-center gap-1.5 font-bold leading-none">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <p className="text-sky-500/80 animate-pulse flex items-center gap-1.5 font-bold leading-none">
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
                 <span>Connection streaming verified securely.</span>
               </p>
             </div>
@@ -920,7 +928,7 @@ export default function App() {
                   </div>
                   <div className="text-xs text-slate-500 leading-relaxed space-y-2 pt-1 border-t border-white/40">
                     <p className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-sky-500 shrink-0"></span>
                       <span>Auth Clearance: <span className="font-extrabold text-[#0066FF] uppercase tracking-wider text-[10px]">Super-User Access</span></span>
                     </p>
                     <p className="flex items-center gap-2">
@@ -949,7 +957,7 @@ export default function App() {
                         setFiles(INITIAL_FILES);
                         addToast('Local Clinical database cache execution completed cleanly!', 'success');
                       }}
-                      className="h-9 px-4 bg-[#f1f3f9] border border-rose-200/50 text-rose-700 text-xs font-bold rounded-xl shadow-nm-button hover:shadow-nm-button-inset transition-all active:scale-95 cursor-pointer text-[10px] uppercase tracking-wider font-black"
+                      className="h-9 px-4 bg-[#f1f3f9] border border-sky-200/50 text-sky-700 text-xs font-bold rounded-xl shadow-nm-button hover:shadow-nm-button-inset transition-all active:scale-95 cursor-pointer text-[10px] uppercase tracking-wider font-black"
                     >
                       Reset System Cache
                     </button>
@@ -1118,10 +1126,10 @@ export default function App() {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.2 }}
                 onClick={() => setToasts([])}
-                className="pointer-events-auto w-full py-2.5 bg-[#f1f3f9] text-rose-600 hover:text-rose-800 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-nm-button hover:shadow-nm-button-inset flex items-center justify-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-rose-500 border border-white/60 cursor-pointer self-end"
+                className="pointer-events-auto w-full py-2.5 bg-[#f1f3f9] text-sky-600 hover:text-sky-800 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-nm-button hover:shadow-nm-button-inset flex items-center justify-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-sky-500 border border-white/60 cursor-pointer self-end"
               >
                 <span>Dismiss All Alerts ({toasts.length})</span>
-                <span className="text-rose-400 font-extrabold text-xs">×</span>
+                <span className="text-sky-400 font-extrabold text-xs">×</span>
               </motion.button>
             )}
 
@@ -1136,23 +1144,23 @@ export default function App() {
               >
                 {/* Visual colored side indicator accent */}
                 <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${
-                  toast.type === 'success' ? 'bg-emerald-500' :
-                  toast.type === 'warning' ? 'bg-amber-500' :
-                  toast.type === 'error' ? 'bg-rose-500' :
+                  toast.type === 'success' ? 'bg-sky-500' :
+                  toast.type === 'warning' ? 'bg-blue-500' :
+                  toast.type === 'error' ? 'bg-slate-500' :
                   'bg-[#0066FF]'
                 }`} />
 
                 {/* Status custom icon wrapper */}
                 <div className={`p-1.5 rounded-xl shrink-0 ${
-                  toast.type === 'success' ? 'bg-emerald-50/70 border border-emerald-200/50 text-emerald-600' :
-                  toast.type === 'warning' ? 'bg-amber-50/70 border border-amber-200/50 text-amber-600' :
-                  toast.type === 'error' ? 'bg-rose-50/70 border border-rose-200/50 text-rose-605' :
+                  toast.type === 'success' ? 'bg-sky-50/70 border border-sky-200/50 text-sky-600' :
+                  toast.type === 'warning' ? 'bg-blue-50/70 border border-blue-200/50 text-blue-600' :
+                  toast.type === 'error' ? 'bg-slate-50/70 border border-slate-200/50 text-slate-600' :
                   'bg-blue-50/70 border border-blue-200/50 text-[#0066FF]'
                 }`}>
-                  {toast.type === 'success' ? <CheckCircle className="w-4.5 h-4.5" /> :
-                   toast.type === 'warning' ? <AlertTriangle className="w-4.5 h-4.5" /> :
-                   toast.type === 'error' ? <AlertTriangle className="w-4.5 h-4.5" /> :
-                   <HelpCircle className="w-4.5 h-4.5" />}
+                  {toast.type === 'success' ? <CheckCircle className="w-5 h-5" /> :
+                   toast.type === 'warning' ? <AlertTriangle className="w-5 h-5" /> :
+                   toast.type === 'error' ? <AlertTriangle className="w-5 h-5" /> :
+                   <HelpCircle className="w-5 h-5" />}
                 </div>
 
                 {/* Message body blocks */}

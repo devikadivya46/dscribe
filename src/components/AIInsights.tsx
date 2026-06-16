@@ -67,7 +67,7 @@ export default function AIInsights({ insights, onAcknowledge, onShowToast }: AII
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-violet-600 items-center justify-center shadow-card shrink-0">
+          <div className="hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-violet-700 items-center justify-center shadow-card shrink-0">
             <Sparkles className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -97,7 +97,7 @@ export default function AIInsights({ insights, onAcknowledge, onShowToast }: AII
               <div className="flex items-center justify-between">
                 <span className={`text-[10px] font-black uppercase tracking-widest ${stat.labelColor}`}>{stat.label}</span>
                 <div className={`w-9 h-9 rounded-full ${stat.iconBg} flex items-center justify-center`}>
-                  <StatIcon className={`w-4.5 h-4.5 ${stat.iconColor}`} />
+                  <StatIcon className={`w-5 h-5 ${stat.iconColor}`} />
                 </div>
               </div>
               <div className="mt-3">
@@ -131,7 +131,7 @@ export default function AIInsights({ insights, onAcknowledge, onShowToast }: AII
                 className="flex flex-col sm:flex-row sm:items-start gap-4 p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-white transition-all"
               >
                 <div className="w-10 h-10 rounded-full bg-pastel-blue flex items-center justify-center shrink-0">
-                  <TypeIcon className="w-4.5 h-4.5 text-[#0066FF]" />
+                  <TypeIcon className="w-5 h-5 text-[#0066FF]" />
                 </div>
 
                 <div className="flex-1 min-w-0 space-y-1.5">

@@ -28,7 +28,7 @@ export default function CareTeamComponent({ careTeam, compact = false }: CareTea
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-700">
-            <UsersRound className="w-4.5 h-4.5" />
+            <UsersRound className="w-5 h-5" />
           </div>
           <div>
             <h3 className="text-sm font-black text-slate-900 tracking-tight">Care Team</h3>

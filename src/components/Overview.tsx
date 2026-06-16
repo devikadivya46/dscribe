@@ -42,6 +42,26 @@ const accentPalette = [
 
 export default function Overview({ patients, files, setActiveTab }: OverviewProps) {
 
+  function AnimatedNumber({ value, duration = 600 }: { value: string; duration?: number }) {
+    const [display, setDisplay] = React.useState<string>('0');
+    React.useEffect(() => {
+      let start: number | null = null;
+      const isPct = typeof value === 'string' && value.trim().endsWith('%');
+      const target = isPct ? parseFloat(value.replace('%', '')) : Number(value || 0);
+      if (Number.isNaN(target)) { setDisplay(String(value)); return; }
+      const step = (timestamp: number) => {
+        if (!start) start = timestamp;
+        const elapsed = timestamp - start;
+        const t = Math.min(1, elapsed / duration);
+        const current = Math.round((target * t) * (isPct ? 10 : 1)) / (isPct ? 10 : 1);
+        setDisplay(isPct ? `${current}%` : String(Math.floor(current)));
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }, [value, duration]);
+    return <p className="text-2xl font-black text-slate-800 tracking-tight">{display}</p>;
+  }
+
   const activePatients = patients.length;
   const uniqueDoctors = new Set(patients.flatMap(p => getCareTeam(p).map(member => member.doctor))).size;
   const totalFiles = files.length;
@@ -210,13 +230,13 @@ export default function Overview({ patients, files, setActiveTab }: OverviewProp
 
           {/* Decorative illustration cluster */}
           <div className="hidden lg:flex items-center justify-center relative w-56 h-44 shrink-0">
-            <div className="absolute top-0 right-4 w-28 h-28 rounded-full bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center shadow-card">
+            <div className="absolute top-0 right-4 w-28 h-28 rounded-full bg-gradient-to-br from-teal-500 to-emerald-700 flex items-center justify-center shadow-card">
               <HeartPulse className="w-12 h-12 text-white" />
             </div>
-            <div className="absolute bottom-2 left-0 w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-card">
+            <div className="absolute bottom-2 left-0 w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-card">
               <Stethoscope className="w-9 h-9 text-white" />
             </div>
-            <div className="absolute bottom-0 right-0 w-16 h-16 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center shadow-card">
+            <div className="absolute bottom-0 right-0 w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-violet-700 flex items-center justify-center shadow-card">
               <Activity className="w-7 h-7 text-white" />
             </div>
           </div>
@@ -236,11 +256,11 @@ export default function Overview({ patients, files, setActiveTab }: OverviewProp
               <div className="flex items-center justify-between">
                 <span className={`text-[10px] font-black uppercase tracking-widest ${stat.labelColor}`}>{stat.label}</span>
                 <div className={`w-9 h-9 rounded-full ${stat.iconBg} flex items-center justify-center`}>
-                  <StatIcon className={`w-4.5 h-4.5 ${stat.iconColor}`} />
+                  <StatIcon className={`w-5 h-5 ${stat.iconColor}`} />
                 </div>
               </div>
               <div className="mt-3">
-                <p className="text-2xl font-black text-slate-800 tracking-tight">{stat.value}</p>
+                <AnimatedNumber value={stat.value} />
                 <p className="text-[9px] font-bold text-slate-400 mt-0.5 uppercase tracking-wider">{stat.sub}</p>
               </div>
             </motion.div>

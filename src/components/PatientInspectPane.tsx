@@ -1,18 +1,44 @@
 import React from 'react';
-import { BedDouble, FileText, HeartPulse, Stethoscope, UsersRound, X, Download } from 'lucide-react';
-import { Patient } from '../types';
-import { departmentAbbreviation, departmentChipClass, getCareTeam, getDepartments, getPrimaryDoctor, roleChipClass } from '../careTeam';
+import { BedDouble, FileText, HeartPulse, Stethoscope, UsersRound, X, Download, Plus, Trash2 } from 'lucide-react';
+import { CareTeamRole, DepartmentName, Patient } from '../types';
+import {
+  DOCTOR_OPTIONS,
+  departmentAbbreviation,
+  departmentChipClass,
+  DEPARTMENT_OPTIONS,
+  CARE_TEAM_ROLES,
+  getCareTeam,
+  getDepartments,
+  getPrimaryDoctor,
+  roleChipClass,
+  buildCareTeamMember,
+  normalizeDepartment
+} from '../careTeam';
 import { downloadPatientReport } from '../utils/reportGenerator';
 
 interface PatientInspectPaneProps {
   patient: Patient | null;
   onClose: () => void;
   onEdit: (patient: Patient) => void;
+  onUpdatePatient: (patient: Patient) => void;
 }
 
-export default function PatientInspectPane({ patient, onClose, onEdit }: PatientInspectPaneProps) {
+const LABEL_OPTIONS: Patient['labels'][number][] = ['Payment Defaulter', 'Insurance', 'High Priority'];
+
+export default function PatientInspectPane({ patient, onClose, onEdit, onUpdatePatient }: PatientInspectPaneProps) {
   const [activeTab, setActiveTab] = React.useState<'overview' | 'careTeam' | 'timeline' | 'documents'>('overview');
-  if (!patient) {
+  const [localPatient, setLocalPatient] = React.useState<Patient | null>(patient);
+  const [selectedDoctor, setSelectedDoctor] = React.useState<string>(patient?.attendingDoctor || DOCTOR_OPTIONS[0]);
+  const [selectedDepartment, setSelectedDepartment] = React.useState<DepartmentName>(patient?.department || DEPARTMENT_OPTIONS[0]);
+  const [selectedRole, setSelectedRole] = React.useState<CareTeamRole>('Cross Consultant');
+
+  React.useEffect(() => {
+    setLocalPatient(patient);
+    setSelectedDoctor(patient?.attendingDoctor || DOCTOR_OPTIONS[0]);
+    setSelectedDepartment(patient?.department || DEPARTMENT_OPTIONS[0]);
+  }, [patient]);
+
+  if (!patient || !localPatient) {
     return (
       <aside className="hidden xl:flex w-[420px] shrink-0 flex-col border-l border-slate-100 bg-white rounded-3xl p-6 shadow-card sticky top-24 max-h-[calc(100vh-112px)]">
         <div className="flex-1 flex flex-col items-center justify-center text-center">
@@ -28,9 +54,9 @@ export default function PatientInspectPane({ patient, onClose, onEdit }: Patient
     );
   }
 
-  const careTeam = getCareTeam(patient);
-  const departments = getDepartments(patient);
-  const primary = getPrimaryDoctor(patient);
+  const careTeam = getCareTeam(localPatient);
+  const departments = getDepartments(localPatient);
+  const primary = getPrimaryDoctor(localPatient);
   const timeline = careTeam.slice(0, 4).map((member, index) => ({
     id: member.id,
     title: member.role === 'Primary Consultant' ? 'Care plan reviewed' : `${member.role} update`,
@@ -38,12 +64,61 @@ export default function PatientInspectPane({ patient, onClose, onEdit }: Patient
     time: member.lastSeen || (index === 0 ? '08:45 AM' : 'Today')
   }));
 
+  const updatePatient = (updated: Patient) => {
+    setLocalPatient(updated);
+    onUpdatePatient(updated);
+  };
+
+  const handleAddDoctor = () => {
+    if (!localPatient) return;
+    const newMember = buildCareTeamMember(selectedDoctor, selectedRole, selectedDepartment);
+    const updatedTeam = [...careTeam, newMember];
+    const updatedDepartments = Array.from(new Set([
+      ...getDepartments({ ...localPatient, careTeam: updatedTeam }),
+      normalizeDepartment(selectedDepartment)
+    ])) as DepartmentName[];
+    const updatedPatient: Patient = {
+      ...localPatient,
+      careTeam: updatedTeam,
+      departments: updatedDepartments,
+      attendingDoctor: selectedRole === 'Primary Consultant' ? selectedDoctor : localPatient.attendingDoctor
+    };
+    updatePatient(updatedPatient);
+  };
+
+  const handleRemoveDoctor = (doctorId: string) => {
+    if (!localPatient) return;
+    const updatedTeam = careTeam.filter((member) => member.id !== doctorId);
+    const nextPrimary = updatedTeam.find((member) => member.role === 'Primary Consultant') || updatedTeam[0];
+    const updatedPatient: Patient = {
+      ...localPatient,
+      careTeam: updatedTeam,
+      attendingDoctor: nextPrimary?.doctor || localPatient.attendingDoctor,
+      department: nextPrimary?.department || localPatient.department,
+      departments: Array.from(new Set(getDepartments({ ...localPatient, careTeam: updatedTeam }))) as DepartmentName[]
+    };
+    updatePatient(updatedPatient);
+  };
+
+  const handleToggleLabel = (label: Patient['labels'][number]) => {
+    if (!localPatient) return;
+    const hasLabel = localPatient.labels.includes(label);
+    const updatedLabels = hasLabel
+      ? localPatient.labels.filter((item) => item !== label)
+      : [...localPatient.labels, label];
+    const updatedPatient: Patient = {
+      ...localPatient,
+      labels: updatedLabels
+    };
+    updatePatient(updatedPatient);
+  };
+
   return (
-    <aside className="hidden xl:flex w-[420px] shrink-0 flex-col border-l border-slate-100 bg-white rounded-3xl p-5 shadow-card sticky top-24 max-h-[calc(100vh-112px)] overflow-y-auto custom-scrollbar">
+    <aside className="hidden xl:flex w-[420px] shrink-0 flex-col border-l border-slate-100 bg-white rounded-3xl p-5 shadow-card sticky top-24 custom-scrollbar">
       <div className="flex items-center justify-between gap-3 pb-4 border-b border-slate-200/60">
         <div>
           <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Patient Overview</p>
-          <h2 className="text-lg font-black text-slate-950 mt-1">{patient.name}</h2>
+          <h2 className="text-lg font-black text-slate-950 mt-1">{localPatient.name}</h2>
         </div>
         <button
           type="button"
@@ -57,29 +132,29 @@ export default function PatientInspectPane({ patient, onClose, onEdit }: Patient
 
       <section className="mt-5 bg-white border border-slate-100 rounded-[24px] p-4 shadow-sm">
         <div className="flex items-center gap-3">
-          {patient.avatar ? (
-            <img src={patient.avatar} alt={patient.name} className="w-14 h-14 rounded-2xl object-cover border border-slate-100 shadow-sm shrink-0" />
+          {localPatient.avatar ? (
+            <img src={localPatient.avatar} alt={localPatient.name} className="w-14 h-14 rounded-2xl object-cover border border-slate-100 shadow-sm shrink-0" />
           ) : (
             <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-800 border border-blue-100 flex items-center justify-center font-black text-sm shrink-0">
-              {patient.initials}
+              {localPatient.initials}
             </div>
           )}
           <div className="min-w-0">
-            <h3 className="text-base font-black text-slate-950 truncate">{patient.name}</h3>
-            <p className="text-[11px] font-semibold text-slate-500 mt-1">{patient.gender} / {patient.age}y</p>
+            <h3 className="text-base font-black text-slate-950 truncate">{localPatient.name}</h3>
+            <p className="text-[11px] font-semibold text-slate-500 mt-1">{localPatient.gender} / {localPatient.age}y</p>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 mt-4">
           <div className="rounded-2xl bg-slate-50 border border-slate-100 p-3">
             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">UHID</p>
-            <p className="text-xs font-mono font-black text-slate-900 mt-1">{patient.uhid}</p>
+            <p className="text-xs font-mono font-black text-slate-900 mt-1">{localPatient.uhid}</p>
           </div>
           <div className="rounded-2xl bg-slate-50 border border-slate-100 p-3">
             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Bed</p>
             <p className="text-xs font-black text-slate-900 mt-1 flex items-center gap-1.5">
               <BedDouble className="w-3.5 h-3.5 text-slate-400" />
-              {patient.ward} / {patient.bed}
+              {localPatient.ward} / {localPatient.bed}
             </p>
           </div>
         </div>
@@ -89,19 +164,19 @@ export default function PatientInspectPane({ patient, onClose, onEdit }: Patient
         <div className="grid grid-cols-2 gap-3 text-[11px] text-slate-600">
           <div>
             <p className="font-black text-slate-400 uppercase tracking-widest">Admitted</p>
-            <p className="mt-1 font-black text-slate-950">{patient.admissionDate || '—'}</p>
+            <p className="mt-1 font-black text-slate-950">{localPatient.admissionDate || '—'}</p>
           </div>
           <div>
             <p className="font-black text-slate-400 uppercase tracking-widest">Status</p>
-            <p className="mt-1 font-black text-slate-950">{patient.status}</p>
+            <p className="mt-1 font-black text-slate-950">{localPatient.status}</p>
           </div>
           <div>
             <p className="font-black text-slate-400 uppercase tracking-widest">Department</p>
-            <p className="mt-1 font-black text-slate-950">{patient.department}</p>
+            <p className="mt-1 font-black text-slate-950">{localPatient.department}</p>
           </div>
           <div>
             <p className="font-black text-slate-400 uppercase tracking-widest">Ward</p>
-            <p className="mt-1 font-black text-slate-950">{patient.ward}</p>
+            <p className="mt-1 font-black text-slate-950">{localPatient.ward}</p>
           </div>
         </div>
       </div>
@@ -112,12 +187,12 @@ export default function PatientInspectPane({ patient, onClose, onEdit }: Patient
             <img src={primary.avatar} alt={primary.doctor} className="w-11 h-11 rounded-full object-cover border-2 border-white shadow-sm shrink-0" />
           ) : (
             <div className="w-11 h-11 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-black text-xs shrink-0">
-              {(primary?.doctor || patient.attendingDoctor).replace('Dr. ', '').slice(0, 2).toUpperCase()}
+              {(primary?.doctor || localPatient.attendingDoctor).replace('Dr. ', '').slice(0, 2).toUpperCase()}
             </div>
           )}
           <div className="min-w-0">
             <p className="text-[10px] font-black text-blue-700 uppercase tracking-widest">Primary Consultant</p>
-            <p className="text-sm font-black text-slate-950 mt-0.5 truncate">{primary?.doctor || patient.attendingDoctor}</p>
+            <p className="text-sm font-black text-slate-950 mt-0.5 truncate">{primary?.doctor || localPatient.attendingDoctor}</p>
             <p className="text-[11px] font-semibold text-slate-400 mt-1">Single accountable care owner</p>
           </div>
         </div>
@@ -210,23 +285,103 @@ export default function PatientInspectPane({ patient, onClose, onEdit }: Patient
               </div>
 
               <div className="rounded-[20px] bg-slate-50 p-4 border border-slate-100">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[11px] uppercase tracking-widest text-slate-400 font-black">Manage Doctors</span>
+                  <span className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Add / remove</span>
+                </div>
+                <div className="grid grid-cols-1 gap-3 mt-4">
+                  <select
+                    value={selectedDoctor}
+                    onChange={(e) => setSelectedDoctor(e.target.value)}
+                    className="w-full h-11 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-blue-100 outline-none"
+                  >
+                    {DOCTOR_OPTIONS.map((doctor) => (
+                      <option key={doctor} value={doctor}>{doctor}</option>
+                    ))}
+                  </select>
+                  <div className="grid grid-cols-2 gap-3">
+                    <select
+                      value={selectedRole}
+                      onChange={(e) => setSelectedRole(e.target.value as CareTeamRole)}
+                      className="w-full h-11 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-blue-100 outline-none"
+                    >
+                      {CARE_TEAM_ROLES.map((role) => (
+                        <option key={role} value={role}>{role}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={selectedDepartment}
+                      onChange={(e) => setSelectedDepartment(e.target.value as DepartmentName)}
+                      className="w-full h-11 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-blue-100 outline-none"
+                    >
+                      {DEPARTMENT_OPTIONS.map((department) => (
+                        <option key={department} value={department}>{department}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleAddDoctor}
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-4 py-3 text-xs font-black uppercase tracking-wider text-white hover:bg-blue-700 transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    Add doctor
+                  </button>
+                </div>
+                <div className="mt-4 space-y-2">
+                  {careTeam.map((member) => (
+                    <div key={member.id} className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-3">
+                      <div className="min-w-0">
+                        <p className="text-xs font-black text-slate-950 truncate">{member.doctor}</p>
+                        <p className="text-[10px] text-slate-500">{member.role} • {member.department}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveDoctor(member.id)}
+                        disabled={member.role === 'Primary Consultant' && careTeam.length === 1}
+                        className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 p-2 text-slate-500 hover:bg-rose-100 hover:text-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
+                        aria-label={`Remove ${member.doctor}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-[20px] bg-slate-50 p-4 border border-slate-100">
                 <span className="text-[11px] uppercase tracking-widest text-slate-400 font-black">Key Information</span>
                 <div className="mt-3 space-y-2.5 text-sm text-slate-700">
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-[10px] text-slate-400 uppercase tracking-widest">Ward / Bed</span>
-                    <span className="font-black text-slate-900">{patient.ward} / {patient.bed}</span>
+                    <span className="font-black text-slate-900">{localPatient.ward} / {localPatient.bed}</span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-[10px] text-slate-400 uppercase tracking-widest">Admission Date</span>
-                    <span className="font-black text-slate-900">{patient.admissionDate || '—'}</span>
+                    <span className="font-black text-slate-900">{localPatient.admissionDate || '—'}</span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-[10px] text-slate-400 uppercase tracking-widest">Attending Nurse</span>
-                    <span className="font-black text-slate-900 truncate max-w-[60%] text-right">{patient.attendingDoctor}</span>
+                    <span className="font-black text-slate-900 truncate max-w-[60%] text-right">{localPatient.attendingDoctor}</span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-[10px] text-slate-400 uppercase tracking-widest">Insurance</span>
-                    <span className="font-black text-slate-900">{patient.labels.includes('Insurance') ? 'MediCare Plus' : 'Standard'}</span>
+                    <span className="font-black text-slate-900">{localPatient.labels.includes('Insurance') ? 'MediCare Plus' : 'Standard'}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2 pt-3">
+                    {LABEL_OPTIONS.map((label) => {
+                      const isSelected = localPatient.labels.includes(label);
+                      return (
+                        <button
+                          key={label}
+                          type="button"
+                          onClick={() => handleToggleLabel(label)}
+                          className={`rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-wide transition-all ${isSelected ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100'}`}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -297,8 +452,8 @@ export default function PatientInspectPane({ patient, onClose, onEdit }: Patient
           {activeTab === 'documents' && (
             <div className="space-y-3">
               <div className="rounded-[20px] border border-slate-100 bg-slate-50 p-4 text-sm text-slate-500">
-                {patient.uploadedDocsCount ? (
-                  <p>{patient.uploadedDocsCount} document{patient.uploadedDocsCount > 1 ? 's' : ''} attached to this patient.</p>
+                {localPatient.uploadedDocsCount ? (
+                  <p>{localPatient.uploadedDocsCount} document{localPatient.uploadedDocsCount > 1 ? 's' : ''} attached to this patient.</p>
                 ) : (
                   <p>No documents currently available for this patient.</p>
                 )}
@@ -314,7 +469,7 @@ export default function PatientInspectPane({ patient, onClose, onEdit }: Patient
       <div className="mt-4 grid grid-cols-3 gap-1.5">
         <button
           type="button"
-          onClick={() => onEdit(patient)}
+          onClick={() => onEdit(localPatient)}
           className="h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-[11px] font-black flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
         >
           <FileText className="w-3.5 h-3.5" />
@@ -322,7 +477,7 @@ export default function PatientInspectPane({ patient, onClose, onEdit }: Patient
         </button>
         <button
           type="button"
-          onClick={() => downloadPatientReport(patient)}
+          onClick={() => downloadPatientReport(localPatient)}
           className="h-10 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-full text-[11px] font-black flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
           title="Download patient report dossier"
         >

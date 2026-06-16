@@ -29,19 +29,19 @@ interface PatientCardProps {
 
 const statusConfig = {
   'Provisional Admission': {
-    bg: 'bg-amber-50 border-amber-200 text-amber-800',
-    dot: 'bg-amber-500',
-    bar: 'bg-amber-500'
+    bg: 'bg-sky-50 border-sky-200 text-sky-800',
+    dot: 'bg-sky-500',
+    bar: 'bg-sky-500'
   },
   'MRD Pending': {
-    bg: 'bg-rose-50 border-rose-200 text-rose-700',
-    dot: 'bg-rose-500',
-    bar: 'bg-rose-500'
+    bg: 'bg-blue-50 border-blue-200 text-blue-700',
+    dot: 'bg-blue-500',
+    bar: 'bg-blue-500'
   },
   Completed: {
-    bg: 'bg-emerald-50 border-emerald-200 text-emerald-700',
-    dot: 'bg-emerald-500',
-    bar: 'bg-emerald-500'
+    bg: 'bg-slate-100 border-slate-200 text-slate-600',
+    dot: 'bg-slate-400',
+    bar: 'bg-slate-400'
   },
   Discharged: {
     bg: 'bg-slate-100 border-slate-200 text-slate-600',
@@ -50,10 +50,17 @@ const statusConfig = {
   }
 };
 
+const cardBackgrounds = {
+  'Provisional Admission': 'from-slate-50 via-white to-sky-50 border-slate-200 shadow-[0_18px_60px_rgba(56,139,253,0.14)]',
+  'MRD Pending': 'from-slate-50 via-white to-sky-50 border-slate-200 shadow-[0_18px_60px_rgba(56,139,253,0.14)]',
+  Completed: 'from-slate-50 via-white to-sky-50 border-slate-200 shadow-[0_18px_60px_rgba(56,139,253,0.14)]',
+  Discharged: 'from-slate-50 via-white to-sky-50 border-slate-200 shadow-[0_18px_60px_rgba(56,139,253,0.14)]'
+};
+
 const labelStyles = {
-  'Payment Defaulter': 'bg-rose-50 text-rose-700 border-rose-200',
+  'Payment Defaulter': 'bg-slate-100 text-slate-700 border-slate-200',
   Insurance: 'bg-blue-50 text-blue-700 border-blue-200',
-  'High Priority': 'bg-violet-50 text-violet-700 border-violet-200'
+  'High Priority': 'bg-sky-50 text-sky-700 border-sky-200'
 };
 
 function highlightText(text: string, highlight: string) {
@@ -143,10 +150,10 @@ export default function PatientCard({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.32, delay: Math.min(index * 0.035, 0.22), ease: 'easeOut' }}
-        className={`bg-white rounded-3xl hover:-translate-y-0.5 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all duration-300 p-4 pr-3 pl-6 cursor-pointer relative border ${
-          isSelected 
-            ? 'border-blue-500 bg-gradient-to-r from-blue-50/10 via-white to-white shadow-[0_10px_24px_rgba(37,99,235,0.07)] ring-4 ring-blue-100/50' 
-            : 'border-slate-100/90 shadow-sm hover:border-slate-205'
+        className={`relative overflow-hidden rounded-3xl transition-all duration-300 p-4 pr-3 pl-6 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
+          isSelected
+            ? 'border-blue-500 bg-gradient-to-r from-blue-50/10 via-white to-white shadow-[0_10px_24px_rgba(37,99,235,0.07)] ring-4 ring-blue-100/50'
+            : `border-slate-100/90 bg-gradient-to-br ${cardBackgrounds[resolvedStatus as keyof typeof cardBackgrounds]} hover:-translate-y-0.5 hover:border-slate-200`
         }`}
       >
         {/* Top block: Bio on left, Actions and Navigation on right */}
@@ -165,20 +172,20 @@ export default function PatientCard({
                   {patient.initials || patient.name.slice(0, 2).toUpperCase()}
                 </div>
               )}
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full shadow-sm" />
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-sky-500 border-2 border-white rounded-full shadow-sm" />
             </div>
             <div className="min-w-0 text-left">
               <h3 className="text-xs font-bold text-slate-900 truncate max-w-[125px]" title={patient.name}>
                 {highlightText(patient.name, searchTerm)}
               </h3>
-              <p className="text-[10px] font-semibold text-slate-450 mt-0.5">{patient.gender} • {patient.age}y</p>
+              <p className="text-[10px] font-semibold text-slate-500 mt-0.5">{patient.gender} • {patient.age}y</p>
               
               <div className="flex flex-wrap items-center gap-1 mt-1">
                 <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider shrink-0 border ${currentStatusConfig.bg}`}>
                   {resolvedStatus === 'Provisional Admission' ? 'Provisional' : resolvedStatus}
                 </span>
                 {patient.labels?.slice(0, 1).map((label) => (
-                  <span key={label} className={`inline-flex items-center px-1.5 py-0.5 rounded border text-[8px] font-black uppercase tracking-wider ${labelStyles[label as keyof typeof labelStyles] || 'bg-slate-50 text-slate-655 border-slate-100'}`}>
+                  <span key={label} className={`inline-flex items-center px-1.5 py-0.5 rounded border text-[8px] font-black uppercase tracking-wider ${labelStyles[label as keyof typeof labelStyles] || 'bg-slate-50 text-slate-600 border-slate-100'}`}>
                     {label}
                   </span>
                 ))}
@@ -191,7 +198,7 @@ export default function PatientCard({
               <button
                 id={`patient-menu-btn-${patient.id}`}
                 onClick={(e) => handleActionClick(e, () => setShowMenu(!showMenu))}
-                className="w-7.5 h-7.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-150/70 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200/70 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
                 title="Patient actions"
                 aria-expanded={showMenu}
               >
@@ -201,10 +208,10 @@ export default function PatientCard({
               {showMenu && (
                 <div
                   ref={menuRef}
-                  className="absolute right-0 top-9 w-[190px] bg-white border border-slate-150/70 rounded-2xl shadow-[0_18px_45px_rgba(15,23,42,0.14)] py-2 z-55 text-xs text-left"
+                  className="absolute right-0 top-9 w-[190px] bg-white border border-slate-200/70 rounded-2xl shadow-[0_18px_45px_rgba(15,23,42,0.14)] py-2 z-[55] text-xs text-left"
                 >
                   <button onClick={(e) => handleActionClick(e, () => { openDetails(); setShowMenu(false); })} className="w-full text-left px-3 py-2 font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2">
-                    <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                    <FileText className="w-3.5 h-3.5 text-sky-600" />
                     View full file
                   </button>
                   <button onClick={(e) => handleActionClick(e, () => { downloadPatientReport(patient); setShowMenu(false); })} className="w-full text-left px-3 py-2 font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2">
@@ -220,8 +227,8 @@ export default function PatientCard({
                     <PenTool className="w-3.5 h-3.5 text-blue-600" />
                     Edit intake
                   </button>
-                  <button onClick={(e) => handleActionClick(e, () => { if (confirm(`Delete ${patient.name} from active lists?`)) onDelete(patient.id); setShowMenu(false); })} className="w-full text-left px-3 py-2 font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2">
-                    <ShieldAlert className="w-3.5 h-3.5" />
+                  <button onClick={(e) => handleActionClick(e, () => { if (confirm(`Delete ${patient.name} from active lists?`)) onDelete(patient.id); setShowMenu(false); })} className="w-full text-left px-3 py-2 font-bold text-slate-700 hover:bg-slate-100 flex items-center gap-2">
+                    <ShieldAlert className="w-3.5 h-3.5 text-slate-500" />
                     Delete patient
                   </button>
                 </div>
@@ -231,10 +238,10 @@ export default function PatientCard({
             <button
               type="button"
               onClick={(e) => handleActionClick(e, openDetails)}
-              className={`w-7.5 h-7.5 rounded-full flex items-center justify-center transition-all cursor-pointer ${
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer ${
                 isSelected 
                   ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm' 
-                  : 'bg-slate-100 text-slate-500 hover:bg-slate-200 border border-slate-150'
+                  : 'bg-slate-100 text-slate-500 hover:bg-slate-200 border border-slate-200'
               }`}
               title="Select / View details"
             >
@@ -256,10 +263,10 @@ export default function PatientCard({
                   src={primaryDoctor.avatar}
                   alt={primaryDoctor.doctor}
                   referrerPolicy="no-referrer"
-                  className="w-7.5 h-7.5 rounded-full object-cover border border-slate-100 shadow-sm shrink-0"
+                  className="w-10 h-10 rounded-full object-cover border border-slate-100 shadow-sm shrink-0"
                 />
               ) : (
-                <div className="w-7.5 h-7.5 rounded-full bg-blue-50 text-blue-800 border border-blue-100 flex items-center justify-center font-black text-[9px] shrink-0">
+                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-800 border border-blue-100 flex items-center justify-center font-black text-[9px] shrink-0">
                   {primaryDoctor?.doctor ? primaryDoctor.doctor.replace('Dr. ', '').slice(0, 2).toUpperCase() : 'DR'}
                 </div>
               )}
@@ -280,19 +287,19 @@ export default function PatientCard({
                       key={member.id}
                       src={member.avatar}
                       alt={member.doctor}
-                      className={`w-4.5 h-4.5 rounded-full object-cover border border-white shadow-sm shrink-0 ${i > 0 ? '-ml-1' : ''}`}
+                      className={`w-5 h-5 rounded-full object-cover border border-white shadow-sm shrink-0 ${i > 0 ? '-ml-1' : ''}`}
                     />
                   ) : (
                     <div
                       key={member.id}
-                      className={`w-4.5 h-4.5 rounded-full bg-blue-100 text-blue-800 border-2 border-white flex items-center justify-center text-[6px] font-black shrink-0 ${i > 0 ? '-ml-1' : ''}`}
+                      className={`w-5 h-5 rounded-full bg-blue-100 text-blue-800 border-2 border-white flex items-center justify-center text-[6px] font-black shrink-0 ${i > 0 ? '-ml-1' : ''}`}
                     >
                       {member.doctor.replace('Dr. ', '').slice(0, 2).toUpperCase()}
                     </div>
                   )
                 ))}
                 {extraCareTeamCount > 0 && (
-                  <div className="w-4.5 h-4.5 -ml-1 rounded-full bg-slate-100 text-slate-650 border border-slate-200 flex items-center justify-center text-[6px] font-black shrink-0">
+                  <div className="w-5 h-5 -ml-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 flex items-center justify-center text-[6px] font-black shrink-0">
                     +{extraCareTeamCount}
                   </div>
                 )}
@@ -345,10 +352,10 @@ export default function PatientCard({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.32, delay: Math.min(index * 0.035, 0.22), ease: 'easeOut' }}
-      className={`bg-white rounded-3xl hover:-translate-y-0.5 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all duration-300 p-5 pl-7 cursor-pointer relative border ${
+      className={`rounded-3xl hover:-translate-y-0.5 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all duration-300 p-5 pl-7 cursor-pointer relative border ${
         isSelected 
           ? 'border-blue-500 bg-gradient-to-r from-blue-50/5 via-white to-white shadow-[0_12px_30px_rgba(37,99,235,0.08)] ring-4 ring-blue-100/50' 
-          : 'border-slate-100/90 shadow-[0_4px_16px_rgba(15,23,42,0.02)] hover:border-slate-205 hover:shadow-[0_8px_24px_rgba(15,23,42,0.04)]'
+          : `border-slate-100/90 bg-gradient-to-br ${cardBackgrounds[resolvedStatus as keyof typeof cardBackgrounds]} hover:border-slate-300 hover:shadow-[0_8px_24px_rgba(15,23,42,0.04)]`
       }`}
     >
       {/* Main Grid Wrapper - Perfectly forces consistent alignment across list items */}
@@ -369,7 +376,7 @@ export default function PatientCard({
                 {patient.initials || patient.name.slice(0, 2).toUpperCase()}
               </div>
             )}
-            <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm" />
+            <span className="absolute bottom-0 right-0 w-3 h-3 bg-sky-500 border-2 border-white rounded-full shadow-sm" />
           </div>
           
           <div className="min-w-0 text-left">
@@ -464,7 +471,7 @@ export default function PatientCard({
               )
             ))}
             {extraCareTeamCount > 0 && (
-              <div className="w-6 h-6 -ml-2 rounded-full bg-slate-100 text-slate-600 border border-slate-205 flex items-center justify-center text-[7px] font-black shrink-0 shadow-sm">
+              <div className="w-6 h-6 -ml-2 rounded-full bg-slate-100 text-slate-600 border border-slate-300 flex items-center justify-center text-[7px] font-black shrink-0 shadow-sm">
                 +{extraCareTeamCount}
               </div>
             )}
@@ -497,7 +504,7 @@ export default function PatientCard({
                 className="absolute right-0 top-10 w-[200px] bg-white border border-slate-150/70 rounded-2xl shadow-[0_18px_45px_rgba(15,23,42,0.14)] py-2 z-55 text-xs text-left"
               >
                 <button onClick={(e) => handleActionClick(e, () => { openDetails(); setShowMenu(false); })} className="w-full text-left px-3 py-2 font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2">
-                  <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                  <FileText className="w-3.5 h-3.5 text-sky-600" />
                   View full file
                 </button>
                 <button onClick={(e) => handleActionClick(e, () => { downloadPatientReport(patient); setShowMenu(false); })} className="w-full text-left px-3 py-2 font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2">
@@ -515,7 +522,7 @@ export default function PatientCard({
                   })}
                   className="w-full text-left px-3 py-2 font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2"
                 >
-                  <Printer className="w-3.5 h-3.5 text-violet-600" />
+                  <Printer className="w-3.5 h-3.5 text-sky-600" />
                   Print wristband
                 </button>
                 <div className="h-px bg-slate-100 my-1" />
@@ -523,7 +530,7 @@ export default function PatientCard({
                   <PenTool className="w-3.5 h-3.5 text-blue-600" />
                   Edit intake
                 </button>
-                <button onClick={(e) => handleActionClick(e, () => { if (confirm(`Delete ${patient.name} from active lists?`)) onDelete(patient.id); setShowMenu(false); })} className="w-full text-left px-3 py-2 font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2">
+                <button onClick={(e) => handleActionClick(e, () => { if (confirm(`Delete ${patient.name} from active lists?`)) onDelete(patient.id); setShowMenu(false); })} className="w-full text-left px-3 py-2 font-bold text-sky-600 hover:bg-sky-50 flex items-center gap-2">
                   <ShieldAlert className="w-3.5 h-3.5" />
                   Delete patient
                 </button>

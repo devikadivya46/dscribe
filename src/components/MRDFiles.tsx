@@ -108,7 +108,7 @@ export default function MRDFiles({ files, onUpdateFileNotes, onRefresh, onShowTo
       <div className="px-6 md:px-8 py-5 border-b border-white/45 bg-white/45 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-lg md:text-xl font-black text-slate-900 tracking-tight">Medical Record Files</h1>
-          <p className="text-[11px] text-slate-550 mt-0.5 font-bold">Manage, audit, and append verified biometric logs and patient charts.</p>
+          <p className="text-[11px] text-slate-500 mt-0.5 font-bold">Manage, audit, and append verified biometric logs and patient charts.</p>
         </div>
         <div className="flex items-center gap-3">
           <button 
