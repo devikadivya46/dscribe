@@ -35,6 +35,12 @@
   /* Flat card shadows for the booking/clinic redesign */
   --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
   --shadow-card-hover: 0 4px 12px rgba(15, 23, 42, 0.06), 0 12px 32px rgba(15, 23, 42, 0.10);
+
+  /* Neomorphic card shadows for soft, embossed effects */
+  --shadow-neo-sm: 0 2px 8px rgba(130, 134, 146, 0.08), 0 -2px 8px rgba(255, 255, 255, 0.8);
+  --shadow-neo-md: 0 4px 16px rgba(130, 134, 146, 0.12), 0 -4px 16px rgba(255, 255, 255, 0.9);
+  --shadow-neo-lg: 0 6px 24px rgba(130, 134, 146, 0.15), 0 -6px 24px rgba(255, 255, 255, 0.95);
+  --shadow-neo-hover: 0 8px 32px rgba(130, 134, 146, 0.15), 0 -8px 32px rgba(255, 255, 255, 1);
 }
 
 /* Base custom classes for manual usage */
@@ -97,6 +103,31 @@
   color: #102a43;
   background-color: #f8fafc;
   font-weight: 500;
+}
+
+/* Neomorphic card base classes */
+.neo-card {
+  background: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  box-shadow: 0 2px 8px rgba(130, 134, 146, 0.08), 0 -2px 8px rgba(255, 255, 255, 0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neo-card:hover {
+  box-shadow: 0 8px 32px rgba(130, 134, 146, 0.15), 0 -8px 32px rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+}
+
+.neo-card-sm {
+  background: #fafbfc;
+  border: 1px solid rgba(203, 213, 225, 0.15);
+  box-shadow: 0 2px 6px rgba(120, 125, 135, 0.06), 0 -2px 6px rgba(255, 255, 255, 0.75);
+}
+
+.neo-card-subtle {
+  background: #f9fafb;
+  border: 1px solid rgba(226, 232, 240, 0.4);
+  box-shadow: 0 1px 3px rgba(100, 110, 125, 0.04), 0 -1px 3px rgba(255, 255, 255, 0.7);
 }
 
 .comfort-mode * {

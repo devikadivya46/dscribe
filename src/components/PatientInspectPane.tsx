@@ -40,7 +40,7 @@ export default function PatientInspectPane({ patient, onClose, onEdit, onUpdateP
 
   if (!patient || !localPatient) {
     return (
-      <aside className="hidden xl:flex w-[420px] shrink-0 flex-col border-l border-slate-100 bg-white rounded-3xl shadow-card sticky top-24">
+      <aside className="hidden xl:flex w-[420px] shrink-0 flex-col border-l border-slate-200/40 bg-[#f8fafc] rounded-3xl shadow-[0_2px_8px_rgba(130,134,146,0.08),0_-2px_8px_rgba(255,255,255,0.8)] sticky top-24">
         <div className="p-6">
           <div className="flex flex-col items-center justify-center text-center h-full">
             <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 mb-4">
@@ -133,7 +133,7 @@ export default function PatientInspectPane({ patient, onClose, onEdit, onUpdateP
           </button>
         </div>
 
-        <section className="mt-5 bg-white border border-slate-100 rounded-[24px] p-4 shadow-sm">
+        <section className="mt-5 bg-[#f8fafc] border border-slate-200/40 rounded-[24px] p-4 shadow-[0_2px_8px_rgba(130,134,146,0.08),0_-2px_8px_rgba(255,255,255,0.8)]">
           <div className="flex items-center gap-3">
             {localPatient.avatar ? (
               <img src={localPatient.avatar} alt={localPatient.name} className="w-14 h-14 rounded-2xl object-cover border border-slate-100 shadow-sm shrink-0" />
@@ -163,7 +163,7 @@ export default function PatientInspectPane({ patient, onClose, onEdit, onUpdateP
           </div>
         </section>
 
-        <div className="mt-4 bg-white border border-slate-100 rounded-[24px] p-4 shadow-sm">
+        <div className="mt-4 bg-[#f8fafc] border border-slate-200/40 rounded-[24px] p-4 shadow-[0_2px_8px_rgba(130,134,146,0.08),0_-2px_8px_rgba(255,255,255,0.8)]">
           <div className="grid grid-cols-2 gap-3 text-[11px] text-slate-600">
             <div>
               <p className="font-black text-slate-400 uppercase tracking-widest">Admitted</p>

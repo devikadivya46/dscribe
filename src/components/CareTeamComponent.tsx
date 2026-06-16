@@ -43,7 +43,7 @@ export default function CareTeamComponent({ careTeam, compact = false }: CareTea
         const isOpen = openGroups[group.title];
 
         return (
-          <section key={group.title} className="bg-white border border-slate-100 rounded-[24px] shadow-card overflow-hidden">
+          <section key={group.title} className="bg-[#f8fafc] border border-slate-200/40 rounded-[24px] shadow-[0_2px_8px_rgba(130,134,146,0.08),0_-2px_8px_rgba(255,255,255,0.8)] overflow-hidden hover:shadow-[0_8px_32px_rgba(130,134,146,0.15),0_-8px_32px_rgba(255,255,255,1)] transition-all duration-300">
             <button
               type="button"
               onClick={() => setOpenGroups((prev) => ({ ...prev, [group.title]: !prev[group.title] }))}

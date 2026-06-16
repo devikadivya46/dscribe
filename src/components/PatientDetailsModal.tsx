@@ -63,7 +63,7 @@ export default function PatientDetailsModal({ patient, onClose, onEdit }: Patien
 
           <div className="p-5 overflow-y-auto custom-scrollbar space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="rounded-3xl border border-slate-100 bg-slate-50 p-4">
+              <div className="rounded-3xl border border-slate-200/40 bg-[#f8fafc] p-4 shadow-[0_2px_8px_rgba(130,134,146,0.08),0_-2px_8px_rgba(255,255,255,0.8)]">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Location</p>
                 <p className="mt-3 text-sm font-black text-slate-950">{patient.ward} / {patient.bed}</p>
                 <p className="mt-2 text-sm text-slate-600 flex items-center gap-2">
@@ -71,14 +71,14 @@ export default function PatientDetailsModal({ patient, onClose, onEdit }: Patien
                   {patient.department || 'Ward location'}
                 </p>
               </div>
-              <div className="rounded-3xl border border-slate-100 bg-slate-50 p-4">
+              <div className="rounded-3xl border border-slate-200/40 bg-[#f8fafc] p-4 shadow-[0_2px_8px_rgba(130,134,146,0.08),0_-2px_8px_rgba(255,255,255,0.8)]">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Primary consultant</p>
                 <p className="mt-3 text-sm font-black text-slate-950">{primary?.doctor || patient.attendingDoctor}</p>
                 {primary?.department && <p className="mt-2 text-sm text-slate-600">{primary.department}</p>}
               </div>
             </div>
 
-            <div className="rounded-3xl border border-slate-100 bg-slate-50 p-4 space-y-4">
+            <div className="rounded-3xl border border-slate-200/40 bg-[#f8fafc] p-4 space-y-4 shadow-[0_2px_8px_rgba(130,134,146,0.08),0_-2px_8px_rgba(255,255,255,0.8)]">
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
                 Active Care Team (Multidisciplinary)
               </p>

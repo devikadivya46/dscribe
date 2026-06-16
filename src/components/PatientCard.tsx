@@ -52,10 +52,10 @@ const statusConfig = {
 };
 
 const cardBackgrounds = {
-  'Provisional Admission': 'from-slate-50 via-white to-sky-50 border-slate-200 shadow-[0_18px_60px_rgba(56,139,253,0.14)]',
-  'MRD Pending': 'from-slate-50 via-white to-sky-50 border-slate-200 shadow-[0_18px_60px_rgba(56,139,253,0.14)]',
-  Completed: 'from-slate-50 via-white to-sky-50 border-slate-200 shadow-[0_18px_60px_rgba(56,139,253,0.14)]',
-  Discharged: 'from-slate-50 via-white to-sky-50 border-slate-200 shadow-[0_18px_60px_rgba(56,139,253,0.14)]'
+  'Provisional Admission': 'bg-[#f8fafc] border-slate-200/60 shadow-[0_2px_8px_rgba(130,134,146,0.08),0_-2px_8px_rgba(255,255,255,0.8)]',
+  'MRD Pending': 'bg-[#f8fafc] border-slate-200/60 shadow-[0_2px_8px_rgba(130,134,146,0.08),0_-2px_8px_rgba(255,255,255,0.8)]',
+  Completed: 'bg-[#f8fafc] border-slate-200/60 shadow-[0_2px_8px_rgba(130,134,146,0.08),0_-2px_8px_rgba(255,255,255,0.8)]',
+  Discharged: 'bg-[#f8fafc] border-slate-200/60 shadow-[0_2px_8px_rgba(130,134,146,0.08),0_-2px_8px_rgba(255,255,255,0.8)]'
 };
 
 const labelStyles = {

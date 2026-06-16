@@ -92,7 +92,7 @@ export default function AIInsights({ insights, onAcknowledge, onShowToast }: AII
             <motion.div
               key={stat.label}
               {...cardMotion(idx)}
-              className="p-5 bg-white border border-slate-100 shadow-card rounded-3xl flex flex-col justify-between hover:shadow-card-hover transition-all duration-300"
+              className="p-5 bg-[#f8fafc] border border-slate-200/40 shadow-[0_2px_8px_rgba(130,134,146,0.08),0_-2px_8px_rgba(255,255,255,0.8)] rounded-3xl flex flex-col justify-between hover:shadow-[0_8px_32px_rgba(130,134,146,0.15),0_-8px_32px_rgba(255,255,255,1)] hover:-translate-y-1 transition-all duration-300"
             >
               <div className="flex items-center justify-between">
                 <span className={`text-[10px] font-black uppercase tracking-widest ${stat.labelColor}`}>{stat.label}</span>
@@ -112,7 +112,7 @@ export default function AIInsights({ insights, onAcknowledge, onShowToast }: AII
       {/* Insight feed */}
       <motion.div
         {...cardMotion(stats.length)}
-        className="bg-white border border-slate-100 shadow-card rounded-3xl p-6 space-y-4"
+        className="bg-[#f8fafc] border border-slate-200/40 shadow-[0_2px_8px_rgba(130,134,146,0.08),0_-2px_8px_rgba(255,255,255,0.8)] rounded-3xl p-6 space-y-4 hover:shadow-[0_8px_32px_rgba(130,134,146,0.15),0_-8px_32px_rgba(255,255,255,1)] transition-all duration-300"
       >
         <div>
           <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest">Insight Feed</h3>
