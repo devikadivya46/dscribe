@@ -15,7 +15,7 @@ export default function Logo({
 }: LogoProps) {
   const [imgFailed, setImgFailed] = React.useState(false);
 
-  const src = imageSrc || '/assets/images/dscribe-logo.png';
+  const src = imageSrc || '/assets/images/dscribe-logo.svg';
 
   if (!imgFailed) {
     return (
