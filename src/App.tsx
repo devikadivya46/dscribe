@@ -497,7 +497,7 @@ export default function App() {
             </button>
             <div className="flex items-center cursor-default select-none">
               <Logo className="h-6 w-auto" strokeColor="stroke-slate-900" dotClassName="" />
-              <span className="ml-2 text-xs font-semibold text-slate-400 border-l border-[#e2e8f0] pl-2 hidden sm:inline pt-0.5">
+              <span className="ml-2 text-xs font-semibold text-slate-400 border-l border-[#e2e8f0] pl-2 inline-block pt-0.5">
                 Clinical Workspace
               </span>
             </div>
@@ -505,7 +505,7 @@ export default function App() {
 
           {/* Utility slots */}
           <div className="flex items-center gap-3 md:gap-4">
-            <span className="hidden md:inline-flex items-center gap-1.5 px-3 py-1 bg-white/60 text-blue-700 text-xs font-black rounded-lg border border-white/80 shadow-sm">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/60 text-blue-700 text-xs font-black rounded-lg border border-white/80 shadow-sm">
               <span className="w-1.5 h-1.5 bg-sky-500 rounded-full animate-ping"></span>
               <span>Ward 4B Active</span>
             </span>
