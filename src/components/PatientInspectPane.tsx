@@ -40,15 +40,17 @@ export default function PatientInspectPane({ patient, onClose, onEdit, onUpdateP
 
   if (!patient || !localPatient) {
     return (
-      <aside className="hidden xl:flex w-[420px] shrink-0 flex-col border-l border-slate-100 bg-white rounded-3xl p-6 shadow-card sticky top-24 max-h-[calc(100vh-112px)]">
-        <div className="flex-1 flex flex-col items-center justify-center text-center">
-          <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 mb-4">
-            <UsersRound className="w-7 h-7" />
+      <aside className="hidden xl:flex w-[420px] shrink-0 flex-col border-l border-slate-100 bg-white rounded-3xl shadow-card sticky top-24">
+        <div className="p-6">
+          <div className="flex flex-col items-center justify-center text-center h-full">
+            <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 mb-4">
+              <UsersRound className="w-7 h-7" />
+            </div>
+            <p className="text-sm font-black text-slate-900">Patient Inspect Pane</p>
+            <p className="text-xs font-semibold text-slate-400 mt-1 max-w-[240px]">
+              Select Details on any patient card to review care team ownership, departments, and activity here.
+            </p>
           </div>
-          <p className="text-sm font-black text-slate-900">Patient Inspect Pane</p>
-          <p className="text-xs font-semibold text-slate-400 mt-1 max-w-[240px]">
-            Select Details on any patient card to review care team ownership, departments, and activity here.
-          </p>
         </div>
       </aside>
     );
@@ -114,74 +116,75 @@ export default function PatientInspectPane({ patient, onClose, onEdit, onUpdateP
   };
 
   return (
-    <aside className="hidden xl:flex w-[420px] shrink-0 flex-col border-l border-slate-100 bg-white rounded-3xl p-5 shadow-card sticky top-24 custom-scrollbar">
-      <div className="flex items-center justify-between gap-3 pb-4 border-b border-slate-200/60">
-        <div>
-          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Patient Overview</p>
-          <h2 className="text-lg font-black text-slate-950 mt-1">{localPatient.name}</h2>
+    <aside className="hidden xl:flex w-[420px] shrink-0 flex-col border-l border-slate-100 bg-white rounded-3xl shadow-card sticky top-24">
+      <div className="p-5">
+        <div className="flex items-center justify-between gap-3 pb-4 border-b border-slate-200/60">
+          <div>
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Patient Overview</p>
+            <h2 className="text-lg font-black text-slate-950 mt-1">{localPatient.name}</h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-9 h-9 rounded-full bg-white border border-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center shadow-sm cursor-pointer"
+            aria-label="Close patient details"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="w-9 h-9 rounded-full bg-white border border-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center shadow-sm cursor-pointer"
-          aria-label="Close patient details"
-        >
-          <X className="w-4 h-4" />
-        </button>
-      </div>
 
-      <section className="mt-5 bg-white border border-slate-100 rounded-[24px] p-4 shadow-sm">
-        <div className="flex items-center gap-3">
-          {localPatient.avatar ? (
-            <img src={localPatient.avatar} alt={localPatient.name} className="w-14 h-14 rounded-2xl object-cover border border-slate-100 shadow-sm shrink-0" />
-          ) : (
-            <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-800 border border-blue-100 flex items-center justify-center font-black text-sm shrink-0">
-              {localPatient.initials}
+        <section className="mt-5 bg-white border border-slate-100 rounded-[24px] p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            {localPatient.avatar ? (
+              <img src={localPatient.avatar} alt={localPatient.name} className="w-14 h-14 rounded-2xl object-cover border border-slate-100 shadow-sm shrink-0" />
+            ) : (
+              <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-800 border border-blue-100 flex items-center justify-center font-black text-sm shrink-0">
+                {localPatient.initials}
+              </div>
+            )}
+            <div className="min-w-0">
+              <h3 className="text-base font-black text-slate-950 truncate">{localPatient.name}</h3>
+              <p className="text-[11px] font-semibold text-slate-500 mt-1">{localPatient.gender} / {localPatient.age}y</p>
             </div>
-          )}
-          <div className="min-w-0">
-            <h3 className="text-base font-black text-slate-950 truncate">{localPatient.name}</h3>
-            <p className="text-[11px] font-semibold text-slate-500 mt-1">{localPatient.gender} / {localPatient.age}y</p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 mt-4">
+            <div className="rounded-2xl bg-slate-50 border border-slate-100 p-3">
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">UHID</p>
+              <p className="text-xs font-mono font-black text-slate-900 mt-1">{localPatient.uhid}</p>
+            </div>
+            <div className="rounded-2xl bg-slate-50 border border-slate-100 p-3">
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Bed</p>
+              <p className="text-xs font-black text-slate-900 mt-1 flex items-center gap-1.5">
+                <BedDouble className="w-3.5 h-3.5 text-slate-400" />
+                {localPatient.ward} / {localPatient.bed}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <div className="mt-4 bg-white border border-slate-100 rounded-[24px] p-4 shadow-sm">
+          <div className="grid grid-cols-2 gap-3 text-[11px] text-slate-600">
+            <div>
+              <p className="font-black text-slate-400 uppercase tracking-widest">Admitted</p>
+              <p className="mt-1 font-black text-slate-950">{localPatient.admissionDate || '—'}</p>
+            </div>
+            <div>
+              <p className="font-black text-slate-400 uppercase tracking-widest">Status</p>
+              <p className="mt-1 font-black text-slate-950">{localPatient.status}</p>
+            </div>
+            <div>
+              <p className="font-black text-slate-400 uppercase tracking-widest">Department</p>
+              <p className="mt-1 font-black text-slate-950">{localPatient.department}</p>
+            </div>
+            <div>
+              <p className="font-black text-slate-400 uppercase tracking-widest">Ward</p>
+              <p className="mt-1 font-black text-slate-950">{localPatient.ward}</p>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 mt-4">
-          <div className="rounded-2xl bg-slate-50 border border-slate-100 p-3">
-            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">UHID</p>
-            <p className="text-xs font-mono font-black text-slate-900 mt-1">{localPatient.uhid}</p>
-          </div>
-          <div className="rounded-2xl bg-slate-50 border border-slate-100 p-3">
-            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Bed</p>
-            <p className="text-xs font-black text-slate-900 mt-1 flex items-center gap-1.5">
-              <BedDouble className="w-3.5 h-3.5 text-slate-400" />
-              {localPatient.ward} / {localPatient.bed}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <div className="mt-4 bg-white border border-slate-100 rounded-[24px] p-4 shadow-sm">
-        <div className="grid grid-cols-2 gap-3 text-[11px] text-slate-600">
-          <div>
-            <p className="font-black text-slate-400 uppercase tracking-widest">Admitted</p>
-            <p className="mt-1 font-black text-slate-950">{localPatient.admissionDate || '—'}</p>
-          </div>
-          <div>
-            <p className="font-black text-slate-400 uppercase tracking-widest">Status</p>
-            <p className="mt-1 font-black text-slate-950">{localPatient.status}</p>
-          </div>
-          <div>
-            <p className="font-black text-slate-400 uppercase tracking-widest">Department</p>
-            <p className="mt-1 font-black text-slate-950">{localPatient.department}</p>
-          </div>
-          <div>
-            <p className="font-black text-slate-400 uppercase tracking-widest">Ward</p>
-            <p className="mt-1 font-black text-slate-950">{localPatient.ward}</p>
-          </div>
-        </div>
-      </div>
-
-      <section className="mt-4 bg-white border border-slate-100 rounded-[24px] p-4 shadow-sm">
+        <section className="mt-4 bg-white border border-slate-100 rounded-[24px] p-4 shadow-sm">
         <div className="flex items-start gap-3">
           {primary?.avatar ? (
             <img src={primary.avatar} alt={primary.doctor} className="w-11 h-11 rounded-full object-cover border-2 border-white shadow-sm shrink-0" />
@@ -491,8 +494,7 @@ export default function PatientInspectPane({ patient, onClose, onEdit, onUpdateP
           <HeartPulse className="w-3.5 h-3.5 text-rose-500" />
           Rounds
         </button>
-      </div>
-
+      </div>      </div>
       <p className="mt-4 text-[10px] font-semibold text-slate-400 leading-relaxed flex items-start gap-2">
         <Stethoscope className="w-3.5 h-3.5 shrink-0 mt-0.5" />
         Primary consultant stays visible while supporting departments and roles remain available for quick clinical review.
